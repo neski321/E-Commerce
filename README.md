@@ -1,4 +1,4 @@
-# E-Commerce
+# E-Commerce app
 ## Current Requirements:
   ### User Authentication (Sign Up, Login, Logout)
   ### Product Listings
