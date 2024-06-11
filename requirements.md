@@ -3,7 +3,7 @@
 #### **1. Introduction**
 
 **Purpose:**
-This document outlines the functional and non-functional requirements for the development of a phone case e-commerce website. The website will allow users to browse, search, and purchase phone cases, as well as manage their orders and account details. The admin panel will provide functionality for managing products and orders.
+This document outlines the functional and non-functional requirements for the development of an e-commerce website. The website will allow users to browse, search, and purchase phone cases, as well as manage their orders and account details. The admin panel will provide functionality for managing products and orders.
 
 **Scope:**
 The project includes the development of the frontend using React and Tailwind CSS, the backend using Django, and user authentication with Firebase. Payment processing will be handled using Stripe.
