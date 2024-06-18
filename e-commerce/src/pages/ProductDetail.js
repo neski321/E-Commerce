@@ -9,7 +9,7 @@ function ProductDetail() {
   const [product, setProduct] = useState(null);
 
   useEffect(() => {
-    axios.get(`http://localhost:8000/api/products/${id}/`)
+    axios.get(`https://dummyjson.com/products/${id}/`)
       .then(response => {
         setProduct(response.data);
       })
@@ -26,10 +26,11 @@ function ProductDetail() {
     <div className="container mx-auto px-4 py-8">
       <Navbar />
       <div className="py-8">
-        <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
-        <p className="text-gray-700">{product.description}</p>
+        <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
+        <p className="text-gray-700">Description: {product.description}</p>
+        <p className="text-gray-700">Category: {product.category}</p>
         <p className="text-gray-900 font-bold">${product.price}</p>
-        <img src={product.image_url} alt={product.name} className="mt-4" />
+        <img src={product.images} alt={product.title} className="mt-4" />
       </div>
       <Footer />
     </div>
