@@ -1,11 +1,12 @@
 import React, { useRef, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
+import { AuthErrorCodes } from 'firebase/auth';
 
 function Login() {
   const emailRef = useRef();
   const passwordRef = useRef();
-  const { currentUser, login } = useAuth();
+  const { currentUser, login, googleSignIn } = useAuth();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -22,8 +23,30 @@ function Login() {
       setLoading(true);
       await login(emailRef.current.value, passwordRef.current.value);
       navigate('/');
+    } catch (error) {
+      console.log(error.code);
+      // Handle errors
+      switch (error.code) {
+        case AuthErrorCodes.INVALID_LOGIN_CREDENTIALS:
+          setError('The password and email address do not match please try again or Create an account.');
+          break;
+        default:
+          setError('Failed to Log in');
+          break;
+      }
+    }
+
+    setLoading(false);
+  }
+
+  async function handleGoogleSignIn() {
+    try {
+      setError('');
+      setLoading(true);
+      await googleSignIn();
+      navigate('/');
     } catch {
-      setError('Failed to log in');
+      setError('Failed to log in with Google');
     }
 
     setLoading(false);
@@ -49,7 +72,18 @@ function Login() {
             </form>
             <div className="text-center">
                 Need an account? <Link to="/signup" className="text-blue-500 hover:underline">Sign Up</Link>
+                <p>OR</p>
             </div>
+            <div>
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            disabled={loading}
+            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          >
+            Log in with Google
+          </button>
+        </div>
       </div>
     </div>
   );

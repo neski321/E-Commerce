@@ -7,7 +7,7 @@ function Signup() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
-  const { currentUser, signup } = useAuth();
+  const { currentUser, signup, googleSignIn} = useAuth();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -45,6 +45,19 @@ function Signup() {
     setLoading(false);
   }
 
+  async function handleGoogleSignIn() {
+    try {
+      setError('');
+      setLoading(true);
+      await googleSignIn();
+      navigate('/');
+    } catch {
+      setError('Failed to sign up with Google');
+    }
+
+    setLoading(false);
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
@@ -71,6 +84,17 @@ function Signup() {
         </form>
         <div className="text-center">
             Already have an account? <Link to="/login" className="text-blue-500 hover:underline">Log In</Link>
+            <p>OR</p>
+        </div>
+        <div>
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            disabled={loading}
+            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          >
+            Sign Up with Google
+          </button>
         </div>
         </div>
     </div>
