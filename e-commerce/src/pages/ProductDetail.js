@@ -27,10 +27,19 @@ function ProductDetail() {
       <Navbar />
       <div className="py-8">
         <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
-        <p className="text-gray-700">Description: {product.description}</p>
-        <p className="text-gray-700">Category: {product.category}</p>
-        <p className="text-gray-900 font-bold">${product.price}</p>
         <img src={product.images} alt={product.title} className="mt-4" />
+        <p></p>
+        <h2 className="text-xl font-semibold mb-4">Description</h2>
+        <p className="text-gray-700">{product.description}</p>
+        <p></p>
+        <h3 className="text-xl font-semibold mb-4">Category</h3>
+        <p className="text-gray-700">{product.category}</p>
+        <p></p>
+        <h3 className="text-xl font-semibold mb-4">Price</h3>
+        <p className="text-gray-900 font-bold">${product.price}</p>
+        <p></p>
+        <h3 className="text-xl font-semibold mb-4">Availability</h3>
+        <p className="text-gray-700">{product.availabilityStatus}</p>
       </div>
       <Footer />
     </div>
