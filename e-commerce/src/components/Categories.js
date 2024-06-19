@@ -1,17 +1,39 @@
-import React from 'react';
+// src/components/Categories.js
+import React, { useEffect, useState } from 'react';
+import { fetchProducts, getCategoriesFromProducts } from '../services/productService';
+import { Link } from 'react-router-dom';
 
-function Categories() {
+const Categories = () => {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const products = await fetchProducts();
+        const categories = getCategoriesFromProducts(products);
+        setCategories(categories);
+      } catch (error) {
+        console.error('Error loading categories:', error);
+      }
+    };
+
+    loadCategories();
+  }, []);
+
   return (
-    <div className="py-8">
-      <h2 className="text-3xl font-bold mb-4">Categories</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-gray-200 p-4 rounded-lg">Category 1</div>
-        <div className="bg-gray-200 p-4 rounded-lg">Category 2</div>
-        <div className="bg-gray-200 p-4 rounded-lg">Category 3</div>
-        <div className="bg-gray-200 p-4 rounded-lg">Category 4</div>
+    <div className="px-6 py-8">
+      <h2 className="text-2xl font-bold mb-4">Shop by Category</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {categories.map((category, index) => (
+          <Link to={`/category/${category.toLowerCase()}`} key={index} className="block group">
+            <div className="border rounded p-4 hover:bg-gray-100 transition duration-300 ease-in-out">
+              <h3 className="text-xl font-semibold text-gray-800 group-hover:text-gray-600">{category}</h3>
+            </div>
+          </Link>
+        ))}
       </div>
     </div>
   );
-}
+};
 
 export default Categories;

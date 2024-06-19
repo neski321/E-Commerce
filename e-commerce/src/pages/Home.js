@@ -1,33 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+// src/pages/Home.js
+import React from 'react';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
-import Categories from '../components/Categories';
-import FeaturedProducts from '../components/FeaturedProducts';
+// import FeaturedProducts from '../components/FeaturedProducts';
 import Footer from '../components/Footer';
+import Categories from '../components/Categories';
+import Product from '../components/Product';
 
-function Home() {
-  const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    axios.get('https://dummyjson.com/products')
-      .then(response => {
-        setProducts(response.data.products);
-      })
-      .catch(error => {
-        console.error('There was an error fetching the products!', error);
-      });
-  }, []);
-
+const Home = () => {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <>
       <Navbar />
       <Hero />
       <Categories />
-      <FeaturedProducts products={products} />
+      
+      <Product />
       <Footer />
-    </div>
+    </>
   );
-}
+};
 
 export default Home;

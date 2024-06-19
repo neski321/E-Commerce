@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import ProductDetail from './pages/ProductDetail';
+import CategoryList from './pages/CategoryList';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import PrivateRoute from './components/PrivateRoute';
@@ -19,6 +20,7 @@ function App() {
         <Route path="/" element={<PrivateRoute />}>
           <Route path="/" element={<Home />} />
           <Route path="/products/:id" element={<ProductDetail />} />
+          <Route path="/category/:category" element={<CategoryList />} />
         </Route>
       </Routes>
     </div>
