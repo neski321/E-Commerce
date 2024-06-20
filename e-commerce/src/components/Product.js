@@ -29,9 +29,11 @@ const Product = () => {
             <p className="text-gray-700">{product.category}</p>
             <p className="text-gray-900 font-bold">${product.price}</p>
             <img src={product.thumbnail} alt={product.title} className="w-full h-48 object-cover mt-2"/>
-            <Link to={`/products/${product.id}`} className="text-blue-500 hover:underline">
+            <br />
+            <button className="bg-gray-200 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded"><Link to={`/products/${product.id}`} className="text-blue-500 hover:underline">
               View Details
             </Link>
+            </button>
           </div>
         ))}
       </div>

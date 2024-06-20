@@ -22,22 +22,30 @@ function ProductDetail() {
     return <div>Loading...</div>;
   }
 
+  const renderImage = () => {
+    if (product.images) {
+      return <img src={product.images} alt={product.title} className="mt-4" />;
+    } else {
+      return <p className="text-gray-700">Image will be added soon</p>;
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <Navbar />
       <div className="py-8">
         <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
-        <img src={product.images} alt={product.title} className="mt-4" />
-        <p></p>
+        {renderImage()}
+        <br />
         <h2 className="text-xl font-semibold mb-4">Description</h2>
         <p className="text-gray-700">{product.description}</p>
-        <p></p>
+        <br />
         <h3 className="text-xl font-semibold mb-4">Category</h3>
         <p className="text-gray-700">{product.category}</p>
-        <p></p>
+        <br />
         <h3 className="text-xl font-semibold mb-4">Price</h3>
         <p className="text-gray-900 font-bold">${product.price}</p>
-        <p></p>
+        <br />
         <h3 className="text-xl font-semibold mb-4">Availability</h3>
         <p className="text-gray-700">{product.availabilityStatus}</p>
       </div>
