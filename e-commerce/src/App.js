@@ -8,6 +8,7 @@ import Signup from './pages/Signup';
 import PrivateRoute from './components/PrivateRoute';
 import Contact from './pages/Contact';
 import About from './pages/About';
+import ServerStatus from './components/ServerStatus';
 
 function App() {
   return (
@@ -17,10 +18,11 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/contact" element={<Contact />}/>
         <Route path="/about" element={<About />}/>
+        <Route path="/server-status" element={<ServerStatus />} />        
         <Route path="/" element={<PrivateRoute />}>
           <Route path="/" element={<Home />} />
           <Route path="/products/:id" element={<ProductDetail />} />
-          <Route path="/category/:category" element={<CategoryList />} />
+          <Route path="/category/:category" element={<CategoryList />} />          
         </Route>
       </Routes>
     </div>
