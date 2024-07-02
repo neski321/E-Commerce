@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [showCategories, setShowCategories] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   const toggleCategories = () => {
     setShowCategories(!showCategories);
@@ -21,9 +22,12 @@ const Categories = () => {
         console.error('Error loading categories:', error);
       }
     };
-
+    if (!loaded) {
+      loadCategories();
+      setLoaded(true);
+    }
     loadCategories();
-  }, []);
+  }, [loaded]);
 
   return (
     <div className="px-6 py-8">

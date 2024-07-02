@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 const Product = () => {
   const [products, setProducts] = useState([]);
   const [showFeaturedProducts, setShowFeaturedProducts] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -16,9 +17,12 @@ const Product = () => {
         console.error('Error loading products:', error);
       }
     };
-
+    if (!loaded) {
+      loadProducts();
+      setLoaded(true);
+    }
     loadProducts();
-  }, []);
+  }, [loaded]);
 
   const toggleFeaturedProducts = () => setShowFeaturedProducts(!showFeaturedProducts);
 
