@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import ProductDetail from './pages/ProductDetail';
 import CategoryList from './pages/CategoryList';
@@ -16,13 +16,14 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/contact" element={<Contact />}/>
-        <Route path="/about" element={<About />}/>
-        <Route path="/server-status" element={<ServerStatus />} />        
         <Route path="/" element={<PrivateRoute />}>
-          <Route path="/" element={<Home />} />
+          <Route index element={<Navigate to="/home" />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/server-status" element={<ServerStatus />} />
           <Route path="/products/:id" element={<ProductDetail />} />
-          <Route path="/category/:category" element={<CategoryList />} />          
+          <Route path="/category/:category" element={<CategoryList />} />
         </Route>
       </Routes>
     </div>
