@@ -47,18 +47,19 @@ const SearchPage = () => {
             onChange={(e) => setQuery(e.target.value)}
             className="border rounded-l p-2 w-full"
             placeholder="Search for products..."
-          />
+          /> &nbsp;
           <button
             type="button"
             onClick={(e) => handleSearch(e, 'regular')}
-            className="bg-blue-500 text-white p-2"
+            className="bg-blue-500 text-white py-2 px-6 rounded"
           >
             Search
-          </button>
+          </button>&nbsp;&nbsp;
+          
           <button
             type="button"
             onClick={(e) => handleSearch(e, 'advanced')}
-            className="bg-green-500 text-white p-2 rounded-r"
+            className="bg-green-500 text-white py-2 px-6 rounded"
           >
             Advanced Search
           </button>
