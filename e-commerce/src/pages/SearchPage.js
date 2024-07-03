@@ -41,7 +41,7 @@ const SearchPage = () => {
                         {results.map((product) => (
                             <div key={product.id} className="border rounded-lg shadow-lg p-4 flex flex-col items-center">
                             <img src={product.images[0]} alt={product.title} className="w-full h-48 object-cover mb-4 rounded" />
-                            <h2 className="font-bold text-lg mb-2">{product.name}</h2>
+                            <h2 className="font-bold text-lg mb-2">{product.title}</h2>
                             <p className="text-gray-900 font-semibold mb-4">${product.price}</p>
                             <Link to={`/product/${product.id}`} className="bg-blue-500 text-white px-4 py-2 rounded">View Details</Link>
                           </div>
