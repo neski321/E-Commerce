@@ -1,5 +1,7 @@
 import React, {useState} from "react";
 import axios from 'axios';
+import Navbar from '../components/Navbar';
+import Footer from "../components/Footer";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -19,6 +21,7 @@ const SearchPage = () => {
 
     return(
         <div className="container mx-auto p-4">
+            <Navbar />
             <h1 className="text-2xl font-bold mb-4">Search Products</h1>
             <form onSubmit={handleSearch} className="mb-4">
                 <input 
@@ -44,6 +47,7 @@ const SearchPage = () => {
                     <p>No results found</p>
                 )}
             </div>
+            <Footer />
         </div>
     );
 };
