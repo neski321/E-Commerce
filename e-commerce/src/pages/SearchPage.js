@@ -15,13 +15,18 @@ const SearchPage = () => {
   const handleSearch = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.get(`${API_URL}/products/?search=${query}`);
-      setResults(response.data);
-      setCurrentPage(1); // Reset to first page on new search
-    } catch (error) {
-      console.error('Error fetching search results:', error);
-    }
-  };
+      const response = await axios.get(`${API_URL}/products/`, {
+      params: {
+        search: query,
+        type: type
+      }
+    });
+    setResults(response.data);
+    setCurrentPage(1); // Reset to first page on new search
+  } catch (error) {
+    console.error('Error fetching search results:', error);
+  }
+};
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -34,15 +39,30 @@ const SearchPage = () => {
     <Navbar />
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6 text-center">Search Products</h1>
-      <form onSubmit={handleSearch} className="mb-6 flex justify-center">
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="border rounded-l p-2 w-full md:w-1/2"
-          placeholder="Search for products..."
-        />
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded-r">Search</button>
+      <form className="mb-6 flex flex-col items-center">
+        <div className="flex w-full md:w-1/2">
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="border rounded-l p-2 w-full"
+            placeholder="Search for products..."
+          />
+          <button
+            type="button"
+            onClick={(e) => handleSearch(e, 'regular')}
+            className="bg-blue-500 text-white p-2"
+          >
+            Search
+          </button>
+          <button
+            type="button"
+            onClick={(e) => handleSearch(e, 'advanced')}
+            className="bg-green-500 text-white p-2 rounded-r"
+          >
+            Advanced Search
+          </button>
+        </div>
       </form>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-6">
         {currentItems.length > 0 ? (

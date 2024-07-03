@@ -1,6 +1,9 @@
 # products/views.py
 
-from rest_framework import viewsets, filters
+from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from django.db.models import Q
 from .models import Product
 from .serializers import ProductSerializer
 from django.http import JsonResponse
@@ -8,11 +11,22 @@ from django.http import JsonResponse
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['title','description','category']
 
     def get_queryset(self):
-        return super().get_queryset()
+        queryset = super().get_queryset()
+        search_query = self.request.query_params.get('search', None)
+        if search_query:
+            search_type = self.request.query_params.get('type', 'regular')
+            if search_type == 'regular':
+                queryset = queryset.filter(Q(title__icontains=search_query))
+            elif search_type == 'advanced':
+                queryset = queryset.filter(
+                    Q(title__icontains=search_query) |
+                    Q(description__icontains=search_query) |
+                    Q(category__icontains=search_query) |
+                    Q(price__icontains=search_query)
+                )
+        return queryset
 
 def server_status(request):
     return JsonResponse({'status': 'Server is running fine'})
