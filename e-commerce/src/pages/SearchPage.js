@@ -38,14 +38,16 @@ const SearchPage = () => {
                 {results.length > 0 ? (
                     <ul>
                         {results.map((product) => (
-                            <li key={product.id} className="border-b p-2">
-                                <h2 className="font-bold">{product.title}</h2>
-                                <p>{product.description}</p>
-                            </li>
+                            <div key={product.id} className="border rounded-lg shadow-lg p-4 flex flex-col items-center">
+                            <img src={product.images[0]} alt={product.title} className="w-full h-48 object-cover mb-4 rounded" />
+                            <h2 className="font-bold text-lg mb-2">{product.name}</h2>
+                            <p className="text-gray-900 font-semibold mb-4">${product.price}</p>
+                            <Link to={`/product/${product.id}`} className="bg-blue-500 text-white px-4 py-2 rounded">View Details</Link>
+                          </div>
                         ))}
                     </ul>
                 ) : (
-                    <p>No results found</p>
+                    <p className="text-center text-gray-700">No product matching that search term was found</p>
                 )}
             </div>
         </div>
