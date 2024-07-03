@@ -1,6 +1,7 @@
 // src/pages/About.js
 import React from 'react';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 function About() {
   return (
@@ -20,6 +21,7 @@ function About() {
         </p>
       </div>
     </div>
+    <Footer />
     </div>
   );
 }
