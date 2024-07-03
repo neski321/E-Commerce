@@ -9,7 +9,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     filter_backends = [filters.SearchFilter]
-    search_fields = ['name','description','category']
+    search_fields = ['title','description','category']
 
     def get_queryset(self):
         return super().get_queryset()
