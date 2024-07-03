@@ -29,7 +29,9 @@ const Product = () => {
 
   return (
     <div className="px-6 py-8">
-      <button onClick={toggleFeaturedProducts} className="text-2xl font-bold mb-4">Featured Products</button>
+      <button onClick={toggleFeaturedProducts} className="bg-gray-200 text-2xl font-bold px-4 py-2 rounded hover:bg-gray-500">
+        Featured Products
+        </button>
       {showFeaturedProducts && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {products.slice(0, 15).map(product => (
