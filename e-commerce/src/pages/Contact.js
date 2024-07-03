@@ -1,11 +1,13 @@
 // src/pages/Contact.js
 import React from 'react';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 function Contact() {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <>
     <Navbar />
+    <div className="container mx-auto px-4 py-8">
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <h1 className="text-3xl font-bold mb-4">Contact Us</h1>
       <form className="w-full max-w-lg">
@@ -50,6 +52,8 @@ function Contact() {
       </form>
     </div>
     </div>
+    <Footer />
+    </>
   );
 }
 

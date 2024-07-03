@@ -9,6 +9,7 @@ import PrivateRoute from './components/PrivateRoute';
 import Contact from './pages/Contact';
 import About from './pages/About';
 import ServerStatus from './components/ServerStatus';
+import SearchPage from './pages/SearchPage';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/about" element={<About />} />
+          <Route path="/search" element={<SearchPage />} />
           <Route path="/server-status" element={<ServerStatus />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/category/:category" element={<CategoryList />} />
