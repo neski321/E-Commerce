@@ -9,8 +9,8 @@ const Footer = () => {
         <p>&copy; 2024 E-commerce Store. All rights reserved.</p>
         <div className="mt-4">
           <Link to="/about" className="text-yellow-400 hover:underline mx-2">About</Link>
-          <Link href="/contact" className="text-yellow-400 hover:underline mx-2">Contact</Link>
-          <Link href="/privacy" className="text-yellow-400 hover:underline mx-2">Privacy Policy</Link>
+          <Link to="/contact" className="text-yellow-400 hover:underline mx-2">Contact</Link>
+          <Link to="/privacy" className="text-yellow-400 hover:underline mx-2">Privacy Policy</Link>
         </div>
       </div>
     </footer>
