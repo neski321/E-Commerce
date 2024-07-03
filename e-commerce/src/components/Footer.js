@@ -1,5 +1,6 @@
 // src/components/Footer.js
 import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -7,9 +8,9 @@ const Footer = () => {
       <div className="container mx-auto text-center text-white">
         <p>&copy; 2024 E-commerce Store. All rights reserved.</p>
         <div className="mt-4">
-          <a href="/about" className="text-yellow-400 hover:underline mx-2">About</a>
-          <a href="/contact" className="text-yellow-400 hover:underline mx-2">Contact</a>
-          <a href="/privacy" className="text-yellow-400 hover:underline mx-2">Privacy Policy</a>
+          <Link to="/about" className="text-yellow-400 hover:underline mx-2">About</Link>
+          <Link href="/contact" className="text-yellow-400 hover:underline mx-2">Contact</Link>
+          <Link href="/privacy" className="text-yellow-400 hover:underline mx-2">Privacy Policy</Link>
         </div>
       </div>
     </footer>
