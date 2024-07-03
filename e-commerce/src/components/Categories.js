@@ -31,7 +31,7 @@ const Categories = () => {
 
   return (
     <div className="px-6 py-8">
-      <button onClick={toggleCategories} className="text-2xl font-bold mb-4">
+      <button onClick={toggleCategories} className="bg-gray-150 text-2xl font-bold px-4 py-2 rounded hover:bg-gray-300">
             Shop by Category
           </button>
       {showCategories && (
