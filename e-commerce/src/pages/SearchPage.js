@@ -12,13 +12,13 @@ const SearchPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
-  const handleSearch = async (e) => {
+  const handleSearch = async (e, searchType) => {
     e.preventDefault();
     try {
       const response = await axios.get(`${API_URL}/products/`, {
       params: {
         search: query,
-        type: type
+        type: searchType
       }
     });
     setResults(response.data);
