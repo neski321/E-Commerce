@@ -4,12 +4,14 @@ import { useParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 function ProductDetail() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
 
   useEffect(() => {
-    axios.get(`https://e-commerce-6zf9.onrender.com/api/products/${id}/`)
+    axios.get(`${API_URL}/products/${id}/`)
       .then(response => {
         setProduct(response.data);
       })
@@ -31,8 +33,9 @@ function ProductDetail() {
   };
 
   return (
+    <>
+    <Navbar />
     <div className="container mx-auto px-4 py-8">
-      <Navbar />
       <div className="py-8">
         <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
         {renderImage()}
@@ -49,8 +52,9 @@ function ProductDetail() {
         <h3 className="text-xl font-semibold mb-4">Availability</h3>
         <p className="text-gray-700">{product.availabilityStatus}</p>
       </div>
-      <Footer />
     </div>
+    <Footer />
+    </>
   );
 }
 

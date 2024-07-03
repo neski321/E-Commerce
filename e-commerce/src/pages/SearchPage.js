@@ -20,8 +20,9 @@ const SearchPage = () => {
     };
 
     return(
+        <>
+        <Navbar />
         <div className="container mx-auto p-4">
-            <Navbar />
             <h1 className="text-2xl font-bold mb-4">Search Products</h1>
             <form onSubmit={handleSearch} className="mb-4">
                 <input 
@@ -47,8 +48,9 @@ const SearchPage = () => {
                     <p>No results found</p>
                 )}
             </div>
-            <Footer />
         </div>
+        <Footer />
+        </>
     );
 };
 
