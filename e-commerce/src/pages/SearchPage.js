@@ -43,7 +43,9 @@ const SearchPage = () => {
                             <img src={product.images[0]} alt={product.title} className="w-full h-48 object-cover mb-4 rounded" />
                             <h2 className="font-bold text-lg mb-2">{product.title}</h2>
                             <p className="text-gray-900 font-semibold mb-4">${product.price}</p>
-                            <Link to={`/product/${product.id}`} className="bg-blue-500 text-white px-4 py-2 rounded">View Details</Link>
+                            <button className="bg-gray-200 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded"><Link to={`/products/${product.id}`} className="text-blue-500 hover:underline">
+                View Details
+              </Link></button>
                           </div>
                         ))}
                     </ul>
