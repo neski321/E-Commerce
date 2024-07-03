@@ -1,62 +1,77 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
-import Navbar from '../components/Navbar';
-import Footer from "../components/Footer";
-import { Link } from 'react-router-dom'
-
-const API_URL = process.env.REACT_APP_API_URL;
 
 const SearchPage = () => {
-    const [query, setQuery] = useState('');
-    const [results , setResults] = useState([]);
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
 
-    const handleSearch = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await axios.get(`${API_URL}/products/?search=${query}`);
-            setResults(response.data);
-        } catch (error) {
-            console.error('error fetching search results:',error);
-        }
-    };
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.get(`${API_URL}/products/?search=${query}`);
+      setResults(response.data);
+      setCurrentPage(1); // Reset to first page on new search
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+    }
+  };
 
-    return(
-        <>
-        <Navbar />
-        <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">Search Products</h1>
-            <form onSubmit={handleSearch} className="mb-4">
-                <input 
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                className="border rounded w-full p-2"
-                placeholder="Search for products..."
-                />
-                <button type="submit" className="bg-blue-500 text-white p-2 rounded mt-2">Search</button>
-            </form>
-            <div>
-                {results.length > 0 ? (
-                    <ul>
-                        {results.map((product) => (
-                            <div key={product.id} className="border rounded-lg shadow-lg p-4 flex flex-col items-center">
-                            <img src={product.images[0]} alt={product.title} className="w-full h-48 object-cover mb-4 rounded" />
-                            <h2 className="font-bold text-lg mb-2">{product.title}</h2>
-                            <p className="text-gray-900 font-semibold mb-4">${product.price}</p>
-                            <button className="bg-gray-200 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded"><Link to={`/products/${product.id}`} className="text-blue-500 hover:underline">
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = results.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  return (
+    <div className="container mx-auto p-4">
+      <h1 className="text-3xl font-bold mb-6 text-center">Search Products</h1>
+      <form onSubmit={handleSearch} className="mb-6 flex justify-center">
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="border rounded-l p-2 w-full md:w-1/2"
+          placeholder="Search for products..."
+        />
+        <button type="submit" className="bg-blue-500 text-white p-2 rounded-r">Search</button>
+      </form>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-6">
+        {currentItems.length > 0 ? (
+          currentItems.map((product) => (
+            <div key={product.id} className="border rounded-lg shadow-lg p-4 flex flex-col items-center">
+              <img src={product.images[0]} alt={product.name} className="w-32 h-32 object-cover mb-4 rounded" />
+              <h2 className="font-bold text-lg mb-2">{product.name}</h2>
+              <p className="text-gray-700 mb-2">{product.description}</p>
+              <p className="text-gray-900 font-semibold mb-4">${product.price}</p>
+              <button className="bg-gray-200 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded"><Link to={`/products/${product.id}`} className="text-blue-500 hover:underline">
                 View Details
               </Link></button>
-                          </div>
-                        ))}
-                    </ul>
-                ) : (
-                    <p className="text-center text-gray-700">No product matching that search term was found</p>
-                )}
             </div>
+          ))
+        ) : (
+          <p className="text-center text-gray-700">No results found</p>
+        )}
+      </div>
+      {results.length > itemsPerPage && (
+        <div className="flex justify-center mt-6">
+          <nav>
+            <ul className="pagination flex">
+              {[...Array(Math.ceil(results.length / itemsPerPage)).keys()].map(number => (
+                <li key={number + 1} className={`page-item ${currentPage === number + 1 ? 'active' : ''}`}>
+                  <button onClick={() => paginate(number + 1)} className="page-link p-2 mx-1 border rounded">
+                    {number + 1}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
-        <Footer />
-        </>
-    );
+      )}
+    </div>
+  );
 };
 
 export default SearchPage;
