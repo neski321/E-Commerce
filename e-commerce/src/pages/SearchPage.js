@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import Footer from '../components/Footer';
+import Navbar from '../components/Navbar';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -28,6 +30,8 @@ const SearchPage = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
+    <>
+    <Navbar />
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6 text-center">Search Products</h1>
       <form onSubmit={handleSearch} className="mb-6 flex justify-center">
@@ -54,7 +58,7 @@ const SearchPage = () => {
             </div>
           ))
         ) : (
-          <p className="text-center text-gray-700">No results found</p>
+          <p className="text-center text-gray-700">No products matching your search were found</p>
         )}
       </div>
       {results.length > itemsPerPage && (
@@ -73,6 +77,8 @@ const SearchPage = () => {
         </div>
       )}
     </div>
+    <Footer />
+    </>
   );
 };
 
