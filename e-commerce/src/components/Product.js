@@ -53,7 +53,7 @@ const Product = () => {
           price: product.price,
           image: [product.thumbnail]
         });
-        setFavorites([...favorites, product.Id]);
+        setFavorites([...favorites, product.id]);
         alert('Added to favorites');
       } catch (error) {
         console.error('Error adding to favorites:', error);
