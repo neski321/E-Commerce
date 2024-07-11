@@ -1,20 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { auth } from '../firebaseConfig';
 
 function Navbar() {
-  const { logout} = useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      console.log("Current User Object:", user.email); // Log the user object for debugging
+      setCurrentUser(user);
+    });
+    return unsubscribe;
+  }, []);
 
   async function handleLogout() {
-  try{
-    await logout();
-    navigate('/login');
+    try {
+      await logout();
+      navigate('/login');
     } catch {
       console.error("Failed to Logout");
     }
   }
 
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
+  const getUserInitial = () => {
+    if (currentUser && currentUser.email) {
+      return currentUser.email.charAt(0).toUpperCase();
+    } else {
+      return 'U';
+    }
+  };
 
   return (
     <nav className="bg-gray-800 p-4">
@@ -25,7 +47,29 @@ function Navbar() {
           <Link to="/" className="text-gray-300 hover:text-white px-3 py-2">Home</Link>
           <Link to="/search" className="text-gray-300 hover:text-white px-3 py-2">Search</Link>
           
-          <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">LogOut</button>
+          <div className="relative inline-block">
+            <button onClick={toggleDropdown} className="bg-gray-700 text-white text-xl font-bold py-2 px-4 rounded-full">
+              {getUserInitial()}
+            </button>
+            {dropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20">
+                <Link to="/favorites" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+                  My Favorites
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-red-600"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
+          {currentUser && (
+            <div className="text-white ml-4">
+              Hello, {currentUser.email.split('@')[0] || 'User'}!
+            </div>
+          )}
         </div>
       </div>
     </nav>
