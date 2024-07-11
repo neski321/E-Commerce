@@ -21,7 +21,7 @@ function ProductDetail() {
   }, [id]);
 
   if (!product) {
-    return <div>Loading...</div>;
+    return <div className='text-1xl text-center text-gray-700'>Loading...</div>;
   }
 
   const renderImage = () => {

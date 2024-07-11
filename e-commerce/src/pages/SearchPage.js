@@ -69,8 +69,8 @@ const SearchPage = () => {
         {currentItems.length > 0 ? (
           currentItems.map((product) => (
             <div key={product.id} className="border rounded-lg shadow-lg p-4 flex flex-col items-center">
-              <img src={product.images[0]} alt={product.name} className="w-32 h-32 object-cover mb-4 rounded" />
-              <h2 className="font-bold text-lg mb-2">{product.name}</h2>
+              <img src={product.images[0]} alt={product.title} className="w-32 h-32 object-cover mb-4 rounded" />
+              <h2 className="font-bold text-lg mb-2">{product.title}</h2>
               <p className="text-gray-700 mb-2">{product.description}</p>
               <p className="text-gray-900 font-semibold mb-4">${product.price}</p>
               <button className="bg-gray-200 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded"><Link to={`/products/${product.id}`} className="text-blue-500 hover:underline">
