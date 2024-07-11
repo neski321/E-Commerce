@@ -31,14 +31,14 @@ const FavoritesPage = () => {
                 {favorites.length > 0 ? (
                     favorites.map((product, index) => (
                         <div key={product.productId} className='border rounded p-4'>
-                            <h3 className='text-xl font-semibold'>{product.title}</h3>
+                            <h3 className='text-xl font-semibold'>{product.name}</h3>
                             <p className='text-gray-700'>${product.price}</p>
-                            <img src={product.images[0]} alt={product.title} className='w-full h-48 object-cover mt-2' />
+                            <img src={product.images[0]} alt={product.name} className='w-full h-48 object-cover mt-2' />
                             <br />
                             <button className="bg-gray-200 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded">
-                <Link to={`/products/${product.id}`} className="text-blue-500 hover:underline">
+                <Link to={`/products/${product.productId}`} className="text-blue-500 hover:underline">
                   View Details
-                </Link>
+                </Link>s
               </button>
               </div>
                     ))
