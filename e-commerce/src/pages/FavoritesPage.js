@@ -25,8 +25,8 @@ const FavoritesPage = () => {
     return(
         <>
         <Navbar />
-        <div classname="container mx-auto p-4">
-            <h1 classname="text-3xl font-bold mb-6 text-center">Your Favorites</h1>
+        <div className="container mx-auto p-4">
+            <h1 className="text-3xl font-bold mb-6 text-center">My Favorites</h1>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {favorites.length > 0 ? (
                     favorites.map((product, index) => (
@@ -38,7 +38,7 @@ const FavoritesPage = () => {
                             <button className="bg-gray-200 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded">
                 <Link to={`/products/${product.productId}`} className="text-blue-500 hover:underline">
                   View Details
-                </Link>s
+                </Link>
               </button>
               </div>
                     ))

@@ -24,7 +24,7 @@ function Navbar() {
           <Link to="/server-status" className="text-gray-300 hover:text-white px-3 py-2">Server Status</Link>
           <Link to="/" className="text-gray-300 hover:text-white px-3 py-2">Home</Link>
           <Link to="/search" className="text-gray-300 hover:text-white px-3 py-2">Search</Link>
-          <Link to="/favorites" className="text-gray-300 hover:text-white px-3 py-2">Favorites</Link>
+          <Link to="/favorites" className="text-gray-300 hover:text-white px-3 py-2">My Favorites</Link>
           
           <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">LogOut</button>
         </div>
