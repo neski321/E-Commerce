@@ -53,15 +53,15 @@ function Navbar() {
             </button>
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20">
-                <Link to="/favorites" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
-                  My Favorites
+                <Link to="/profile" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Profile</Link>
+                <Link to="/favorites" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">My Favorites
                 </Link>
                 {role === 'admin' && (
-                  <Link to="/admin" className="text-gray-800 hover:bg-gray-200 px-3 py-2">Admin Access</Link>
+                  <Link to="/admin" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Admin Access</Link>
                 )}
                 <button
                   onClick={handleLogout}
-                  className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-red-600"
+                  className="w-full text-left px-4 py-2 text-gray-800 hover:bg-red-600"
                 >
                   Logout
                 </button>
@@ -70,7 +70,7 @@ function Navbar() {
           </div>
           {currentUser && (
             <div className="text-white ml-4">
-              Hello, {currentUser.email.split('@')[0] || 'User'} you are logged in as ({role})!
+              Hello, {currentUser.email.split('@')[0] || 'User'} - {role} view!
             </div>
           )}
         </div>
