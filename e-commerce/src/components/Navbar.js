@@ -4,14 +4,14 @@ import { useAuth } from '../contexts/AuthContext';
 import { auth } from '../firebaseConfig';
 
 function Navbar() {
-  const { logout } = useAuth();
+  const { logout, role } = useAuth();
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
-      console.log("Current User Object:", user.email); // Log the user object for debugging
+      console.log("Current User Object:", user); // Log the user object for debugging
       setCurrentUser(user);
     });
     return unsubscribe;
@@ -56,6 +56,9 @@ function Navbar() {
                 <Link to="/favorites" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
                   My Favorites
                 </Link>
+                {role === 'admin' && (
+                  <Link to="/admin" className="text-gray-800 hover:bg-gray-200 px-3 py-2">Admin Access</Link>
+                )}
                 <button
                   onClick={handleLogout}
                   className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-red-600"
@@ -67,7 +70,7 @@ function Navbar() {
           </div>
           {currentUser && (
             <div className="text-white ml-4">
-              Hello, {currentUser.email.split('@')[0] || 'User'}!
+              Hello, {currentUser.email.split('@')[0] || 'User'} you are logged in as ({role})!
             </div>
           )}
         </div>

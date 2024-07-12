@@ -1,6 +1,7 @@
 # products/views.py
 
 from rest_framework import viewsets
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.db.models import Q
@@ -30,3 +31,9 @@ class ProductViewSet(viewsets.ModelViewSet):
 
 def server_status(request):
     return JsonResponse({'status': 'Server is running fine'})
+
+@api_view(['GET'])
+def restricted_view(request):
+    if request.user_role != 'admin':
+        return Response({'error': 'Forbidden'}, status=403)
+    return Response({'message': 'Welcome, admin!'})
