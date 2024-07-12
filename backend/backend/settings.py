@@ -55,7 +55,12 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'backend.middleware.check_user_role',
 ]
+
+
+# Firebase and Firestore settings
+FIREBASE_PROJECT_ID = os.getenv('FIREBASE_PROJECT_ID')
 
 # CORS settings
 CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS').split(',')
