@@ -58,6 +58,7 @@ const AdminPage = () => {
 
   return (
     <>
+    <Navbar />
     <div className="px-6 py-8">
       <h2 className="text-2xl font-bold mb-4">Admin Page</h2>
       <div className="mb-4">
@@ -152,6 +153,7 @@ const AdminPage = () => {
         </div>
       </div>
     </div>
+    <Footer />
     </>
   );
 };
