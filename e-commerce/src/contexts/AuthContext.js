@@ -19,7 +19,10 @@ export function AuthProvider({ children }) {
     const user = userCredential.user;
     
     // Store the user role in Firestore
-    await setDoc(doc(db, 'users', user.uid), { role });
+    await setDoc(doc(db, 'users', user.uid), { 
+      email: user.email,
+      role,
+     });
 
     return userCredential;
   }
