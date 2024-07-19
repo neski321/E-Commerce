@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const AdminPage = () => {
   const { currentUser, role } = useAuth();
@@ -55,6 +57,7 @@ const AdminPage = () => {
   }
 
   return (
+    <>
     <div className="px-6 py-8">
       <h2 className="text-2xl font-bold mb-4">Admin Page</h2>
       <div className="mb-4">
@@ -149,6 +152,7 @@ const AdminPage = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
