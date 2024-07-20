@@ -23,6 +23,7 @@ class Command(BaseCommand):
                 defaults={
                     'price': item['price'],
                     'thumbnail': item['thumbnail'],
+                    'images': item['images'],
                     'description': item['description'],
                     'availability_status': item['availabilityStatus'],
                     'discount_percentage': item['discountPercentage'],

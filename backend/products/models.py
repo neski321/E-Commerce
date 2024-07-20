@@ -19,6 +19,7 @@ class Product(models.Model):
     return_policy = models.CharField(max_length=255, default='To be determined')
     minimum_order_quantity = models.IntegerField(default=1)
     thumbnail = models.URLField(default='XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
+    images = models.JSONField(default=dict)
     
     def __str__(self):
         return self.title
