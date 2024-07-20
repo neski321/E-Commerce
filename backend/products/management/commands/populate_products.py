@@ -29,6 +29,12 @@ class Command(BaseCommand):
                     'warranty_information': item['warrantyInformation'],
                     'stock': item['stock'],
                     'weight': item['weight'],
+                    'rating': item['rating'],
+                    'brand': item.get('brand', ''),
+                    'sku': item['sku'],
+                    'shipping_information': item['shippingInformation'],
+                    'minimum_order_quantity': item['minimumOrderQuantity'],
+                    'return_policy': item['returnPolicy'],
                 }
             )
 
