@@ -1,156 +1,228 @@
-import React, { useState, useEffect } from 'react';
+// src/pages/AdminPage.js
+import React, { useState } from 'react';
 import axios from 'axios';
-import { useAuth } from '../contexts/AuthContext';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const AdminPage = () => {
-  const { currentUser, role } = useAuth();
-  const [products, setProducts] = useState([]);
-  const [newProduct, setNewProduct] = useState({ title: '', category: '', price: '', thumbnail: '' });
-  const [updateProduct, setUpdateProduct] = useState({ id: '', title: '', category: '', price: '', thumbnail: '' });
+  const [newProduct, setNewProduct] = useState({ name: '', description: '', price: 0, category: '' });
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [searchId, setSearchId] = useState('');
+  const [deleteId, setDeleteId] = useState('');
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get('/api/products/');
-        setProducts(response.data);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }
-    };
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewProduct(prevState => ({ ...prevState, [name]: value }));
+  };
 
-    fetchProducts();
-  }, []);
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditingProduct(prevState => ({ ...prevState, [name]: value }));
+  };
 
-  const handleAddProduct = async () => {
+  const handleAddProduct = async (e) => {
+    e.preventDefault();
     try {
-      await axios.post('/api/products/', newProduct);
-      setProducts([...products, newProduct]);
-      setNewProduct({ title: '', category: '', price: '', thumbnail: '' });
+      await axios.post(`${API_URL}/products/`, newProduct);
+      setNewProduct({id:'', title: '', description: '', price: 0, category: '' });
+      alert('Product added successfully');
     } catch (error) {
       console.error('Error adding product:', error);
     }
   };
 
-  const handleUpdateProduct = async () => {
+  const handleSearchProduct = async (e) => {
+    e.preventDefault();
     try {
-      await axios.put(`/api/products/${updateProduct.id}/`, updateProduct);
-      setProducts(products.map(product => (product.id === updateProduct.id ? updateProduct : product)));
-      setUpdateProduct({ id: '', title: '', category: '', price: '', thumbnail: '' });
+      const response = await axios.get(`${API_URL}/products/${searchId}`);
+      setEditingProduct(response.data);
+    } catch (error) {
+      console.error('Error fetching product:', error);
+    }
+  };
+
+  const handleUpdateProduct = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.put(`${API_URL}/products/${editingProduct.id}/`, editingProduct);
+      setEditingProduct(null);
+      alert('Product updated successfully');
     } catch (error) {
       console.error('Error updating product:', error);
     }
   };
 
-  const handleDeleteProduct = async (productId) => {
+  const handleDeleteProduct = async (e) => {
+    e.preventDefault();
     try {
-      await axios.delete(`/api/products/${productId}/`);
-      setProducts(products.filter(product => product.id !== productId));
+      await axios.delete(`${API_URL}/products/${deleteId}`);
+      setDeleteId('');
+      alert('Product deleted successfully');
     } catch (error) {
       console.error('Error deleting product:', error);
     }
   };
 
-  if (role !== 'admin') {
-    return <div>Access denied. Admins only.</div>;
-  }
-
   return (
     <>
     <Navbar />
-    <div className="px-6 py-8">
-      <h2 className="text-2xl font-bold mb-4">Admin Page</h2>
-      <div className="mb-4">
-        <h3 className="text-xl font-semibold">Add New Product</h3>
-        <input
-          type="text"
-          placeholder="Title"
-          value={newProduct.title}
-          onChange={(e) => setNewProduct({ ...newProduct, title: e.target.value })}
-          className="w-full px-3 py-2 border rounded mb-2"
-        />
-        <input
-          type="text"
-          placeholder="Category"
-          value={newProduct.category}
-          onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
-          className="w-full px-3 py-2 border rounded mb-2"
-        />
-        <input
-          type="text"
-          placeholder="Price"
-          value={newProduct.price}
-          onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
-          className="w-full px-3 py-2 border rounded mb-2"
-        />
-        <input
-          type="text"
-          placeholder="Thumbnail URL"
-          value={newProduct.thumbnail}
-          onChange={(e) => setNewProduct({ ...newProduct, thumbnail: e.target.value })}
-          className="w-full px-3 py-2 border rounded mb-2"
-        />
-        <button onClick={handleAddProduct} className="w-full py-2 px-4 bg-blue-500 text-white rounded">
-          Add Product
-        </button>
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <h1 className="text-3xl font-bold mb-6">Product Control - Admin</h1>
+
+      {/* Add Product Section */}
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold mb-4">Add Product</h2>
+        <form onSubmit={handleAddProduct} className="bg-white p-4 rounded shadow-md">
+        <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">ID</label>
+            <input
+              type="text"
+              name="id"
+              value={newProduct.id}
+              onChange={handleInputChange}
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Name</label>
+            <input
+              type="text"
+              name="name"
+              value={newProduct.name}
+              onChange={handleInputChange}
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Description</label>
+            <textarea
+              name="description"
+              value={newProduct.description}
+              onChange={handleInputChange}
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Price</label>
+            <input
+              type="number"
+              name="price"
+              value={newProduct.price}
+              onChange={handleInputChange}
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Category</label>
+            <input
+              type="text"
+              name="category"
+              value={newProduct.category}
+              onChange={handleInputChange}
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required
+            />
+          </div>
+          <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
+            Add Product
+          </button>
+        </form>
       </div>
-      <div className="mb-4">
-        <h3 className="text-xl font-semibold">Update Product</h3>
-        <input
-          type="text"
-          placeholder="Product ID"
-          value={updateProduct.id}
-          onChange={(e) => setUpdateProduct({ ...updateProduct, id: e.target.value })}
-          className="w-full px-3 py-2 border rounded mb-2"
-        />
-        <input
-          type="text"
-          placeholder="Title"
-          value={updateProduct.title}
-          onChange={(e) => setUpdateProduct({ ...updateProduct, title: e.target.value })}
-          className="w-full px-3 py-2 border rounded mb-2"
-        />
-        <input
-          type="text"
-          placeholder="Category"
-          value={updateProduct.category}
-          onChange={(e) => setUpdateProduct({ ...updateProduct, category: e.target.value })}
-          className="w-full px-3 py-2 border rounded mb-2"
-        />
-        <input
-          type="text"
-          placeholder="Price"
-          value={updateProduct.price}
-          onChange={(e) => setUpdateProduct({ ...updateProduct, price: e.target.value })}
-          className="w-full px-3 py-2 border rounded mb-2"
-        />
-        <input
-          type="text"
-          placeholder="Thumbnail URL"
-          value={updateProduct.thumbnail}
-          onChange={(e) => setUpdateProduct({ ...updateProduct, thumbnail: e.target.value })}
-          className="w-full px-3 py-2 border rounded mb-2"
-        />
-        <button onClick={handleUpdateProduct} className="w-full py-2 px-4 bg-green-500 text-white rounded">
-          Update Product
-        </button>
-      </div>
-      <div>
-        <h3 className="text-xl font-semibold">Products</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {products.map(product => (
-            <div key={product.id} className="border rounded p-4">
-              <h3 className="text-xl font-semibold">{product.title}</h3>
-              <p className="text-gray-700">{product.category}</p>
-              <p className="text-gray-900 font-bold">${product.price}</p>
-              <img src={product.thumbnail} alt={product.title} className="w-full h-48 object-cover mt-2" />
-              <button onClick={() => handleDeleteProduct(product.id)} className="w-full py-2 px-4 bg-red-500 text-white rounded mt-2">
-                Remove Product
-              </button>
+
+      {/* Update Product Section */}
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold mb-4">Update Product</h2>
+        <form onSubmit={handleSearchProduct} className="bg-white p-4 rounded shadow-md mb-4">
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Search Product by ID</label>
+            <input
+              type="text"
+              value={searchId}
+              onChange={(e) => setSearchId(e.target.value)}
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required
+            />
+          </div>
+          <button type="submit" className="w-full bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600">
+            Search Product
+          </button>
+        </form>
+        {editingProduct && (
+          <form onSubmit={handleUpdateProduct} className="bg-white p-4 rounded shadow-md">
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">Title</label>
+              <input
+                type="text"
+                name="name"
+                value={editingProduct.title}
+                onChange={handleEditInputChange}
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                required
+              />
             </div>
-          ))}
-        </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">Description</label>
+              <textarea
+                name="description"
+                value={editingProduct.description}
+                onChange={handleEditInputChange}
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">Price</label>
+              <input
+                type="number"
+                name="price"
+                value={editingProduct.price}
+                onChange={handleEditInputChange}
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">Category</label>
+              <input
+                type="text"
+                name="category"
+                value={editingProduct.category}
+                onChange={handleEditInputChange}
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                required
+              />
+            </div>
+            <button type="submit" className="w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
+              Update Product
+            </button>
+          </form>
+        )}
+      </div>
+
+      {/* Delete Product Section */}
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold mb-4">Delete Product</h2>
+        <form onSubmit={handleDeleteProduct} className="bg-white p-4 rounded shadow-md">
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Product ID</label>
+            <input
+              type="text"
+              value={deleteId}
+              onChange={(e) => setDeleteId(e.target.value)}
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required
+            />
+          </div>
+          <button type="submit" className="w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">
+            Delete Product
+          </button>
+        </form>
       </div>
     </div>
     <Footer />
