@@ -19,31 +19,33 @@ export const getCategoriesFromProducts = (products) => {
 };
 
 export const addProduct = async (product) => {
-  try {
-      const response = await axios.post(`${API_URL}/products/`, product);
-      return response.data;
-  } catch (error) {
-      console.error('Error adding product:', error);
-      throw error;
-  }
+    try {
+        const response = await axios.post(`${API_URL}/products/`, product);
+        return response.data;
+    } catch (error) {
+        console.error('Error adding product:', error);
+        throw error;
+    }
 };
 
 export const updateProduct = async (id, product) => {
-  try {
-      const response = await axios.put(`${API_URL}/products/${id}/`, product);
-      return response.data;
-  } catch (error) {
-      console.error('Error updating product:', error);
-      throw error;
-  }
+    try {
+        const response = await axios.put(`${API_URL}/products/${id}/`, product);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating product:', error);
+        throw error;
+    }
 };
 
 export const deleteProduct = async (id) => {
-  try {
-      const response = await axios.delete(`${API_URL}/products/${id}/`);
-      return response.data;
-  } catch (error) {
-      console.error('Error deleting product:', error);
-      throw error;
-  }
+    try {
+        const response = await axios.delete(`${API_URL}/products/${id}/`);
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting product:', error);
+        throw error;
+    }
 };
+
+export const removeReview = (productId, reviewId) => axios.delete(`${API_URL}/products/${productId}/reviews/${reviewId}`);

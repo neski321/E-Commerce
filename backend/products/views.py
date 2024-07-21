@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.db.models import Q
 from .models import Product
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer, ReviewSerializer, DimensionSerializer
 from django.http import JsonResponse
 
 class ProductViewSet(viewsets.ModelViewSet):
@@ -40,9 +40,27 @@ def restricted_view(request):
     return Response({'message': 'Welcome, admin!'})
 
 @api_view(['POST'])
-def create_product(request):
+def add_product(request):
     serializer = ProductSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save()
+        product = serializer.save()
+        
+        # Handling reviews if provided
+        reviews_data = request.data.get('reviews', [])
+        for review_data in reviews_data:
+            review_data['product'] = product.id
+            review_serializer = ReviewSerializer(data=review_data)
+            if review_serializer.is_valid():
+                review_serializer.save()
+        
+        # Handling dimensions if provided
+        dimensions_data = request.data.get('dimensions', {})
+        if dimensions_data:
+            dimensions_data['product'] = product.id
+            dimension_serializer = DimensionSerializer(data=dimensions_data)
+            if dimension_serializer.is_valid():
+                dimension_serializer.save()
+        
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

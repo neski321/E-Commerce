@@ -1,19 +1,19 @@
 from rest_framework import serializers
 from .models import Product, Review, Dimension
 
-class DimensionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Dimension
-        fields = ('width', 'height', 'depth')
-
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
-        fields = '__all__'
+        fields = ['id', 'rating', 'comment', 'date', 'reviewer_name', 'reviewer_email']
+
+class DimensionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Dimension
+        fields = ['width', 'height', 'depth']
 
 class ProductSerializer(serializers.ModelSerializer):
-    reviews = ReviewSerializer(many=True, required=False)
-    dimensions = DimensionSerializer(required=False)
+    reviews = ReviewSerializer(many=True, read_only=True)
+    dimensions = DimensionSerializer(read_only=True)
 
     class Meta:
         model = Product
@@ -25,6 +25,7 @@ class ProductSerializer(serializers.ModelSerializer):
         if reviews_data is not None:
             instance.reviews.all().delete()
             for review_data in reviews_data:
+                review_data.pop('product', None)  # Remove product to avoid conflicts
                 Review.objects.create(product=instance, **review_data)
 
         # Update nested dimensions

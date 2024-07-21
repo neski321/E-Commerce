@@ -21,7 +21,11 @@ function ProductDetail() {
   }, [id]);
 
   if (!product) {
-    return <div className='text-1xl text-center text-gray-700'>Loading...</div>;
+    return <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h1 className="text-2xl font-bold mb-4">Loading...</h1>
+        </div>
+    </div>
   }
 
   const renderImage = () => {
