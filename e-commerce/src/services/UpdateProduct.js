@@ -62,7 +62,7 @@ const UpdateProduct = () => {
       };
   
       // Debugging: Print the updated product data including reviews and dimensions
-      console.log('Updated Product:', updatedProduct);
+      console.log('Sending PATCH request with:', updatedProduct);
   
       await updateProduct(updatedProduct.id, updatedProduct);
       setEditingProduct(null);
