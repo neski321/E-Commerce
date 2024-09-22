@@ -24,14 +24,10 @@ const UpdateProduct = () => {
     e.preventDefault();
     try {
       let response;
-
+  
       if (searchType === 'id') {
-        // Search by Product ID
-        response = await axios.get(`${API_URL}/products/`, {
-          params: {
-            productId: searchId,
-          },
-        });
+        // Search by Product ID (fetch by id in the URL)
+        response = await axios.get(`${API_URL}/products/${searchId}/`);
       } else if (searchType === 'title') {
         // Search by Product Title
         response = await axios.get(`${API_URL}/products/`, {
@@ -41,9 +37,9 @@ const UpdateProduct = () => {
           },
         });
       }
-
+  
       if (response.data.length > 0) {
-        setEditingProduct(response.data[0]); // Assuming the API returns a list, we take the first item
+        setEditingProduct(response.data[0]); 
         setProductNotFound(false);
       } else {
         setProductNotFound(true);
@@ -59,7 +55,7 @@ const UpdateProduct = () => {
   const handleUpdateProduct = async (e) => {
     e.preventDefault();
     try {
-      const { reviews, ...updatedProduct } = editingProduct;
+      const { reviews, dimensions, ...updatedProduct } = editingProduct; 
       await updateProduct(updatedProduct.id, updatedProduct);
       setEditingProduct(null);
       alert('Product updated successfully');
