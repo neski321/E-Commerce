@@ -16,8 +16,17 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+
+        # Check if the search query for product ID or other parameters is provided
+        product_id = self.request.query_params.get('productId', None)
         search_query = self.request.query_params.get('search', None)
-        if search_query:
+
+        # Filter by product ID if it exists
+        if product_id:
+            queryset = queryset.filter(id=product_id)
+
+        # Filter by search query (regular or advanced) if product ID is not provided
+        elif search_query:
             search_type = self.request.query_params.get('type', 'regular')
             if search_type == 'regular':
                 queryset = queryset.filter(Q(title__icontains=search_query))
@@ -28,6 +37,7 @@ class ProductViewSet(viewsets.ModelViewSet):
                     Q(category__icontains=search_query) |
                     Q(price__icontains=search_query)
                 )
+
         return queryset
 
 def server_status(request):
