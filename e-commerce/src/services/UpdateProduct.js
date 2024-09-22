@@ -1,0 +1,184 @@
+import React, { useState } from 'react';
+import axios from 'axios';
+import { updateProduct, removeReview } from '../services/productService';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+
+const API_URL = process.env.REACT_APP_API_URL;
+
+const UpdateProduct = () => {
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [searchId, setSearchId] = useState('');
+  const [productNotFound, setProductNotFound] = useState(false);
+
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditingProduct((prevState) => ({ ...prevState, [name]: value }));
+  };
+
+  const handleSearchProduct = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.get(`${API_URL}/products/${searchId}`);
+      setEditingProduct(response.data);
+      setProductNotFound(false);
+    } catch (error) {
+      console.error('Error fetching product:', error);
+      setEditingProduct(null);
+      setProductNotFound(true);
+    }
+  };
+
+  const handleUpdateProduct = async (e) => {
+    e.preventDefault();
+    try {
+      const { reviews, ...updatedProduct } = editingProduct;
+      await updateProduct(updatedProduct.id, updatedProduct);
+      setEditingProduct(null);
+      alert('Product updated successfully');
+    } catch (error) {
+      console.error('Error updating product:', error);
+    }
+  };
+
+  const handleDimensionChange = (e) => {
+    const { name, value } = e.target;
+    setEditingProduct({
+      ...editingProduct,
+      dimensions: {
+        ...editingProduct.dimensions,
+        [name]: value
+      }
+    });
+  };
+
+  const handleReviewChange = (e, index) => {
+    const { name, value } = e.target;
+    setEditingProduct(prevState => {
+      const updatedReviews = [...prevState.reviews];
+      updatedReviews[index] = {
+        ...updatedReviews[index],
+        [name]: value
+      };
+      return {
+        ...prevState,
+        reviews: updatedReviews
+      };
+    });
+  };
+
+  const handleRemoveReview = async (index) => {
+    const reviewId = editingProduct.reviews[index].id;
+    const productId = editingProduct.id;
+
+    try {
+      await removeReview(productId, reviewId);
+      setEditingProduct(prevState => {
+        const updatedReviews = [...prevState.reviews];
+        updatedReviews.splice(index, 1);
+        return {
+          ...prevState,
+          reviews: updatedReviews
+        };
+      });
+      alert('Review removed successfully');
+    } catch (error) {
+      console.error('Error removing review:', error);
+    }
+  };
+
+  return (
+    <>
+      <Navbar />
+      <div className="p-6 bg-gray-100 min-h-screen">
+        <h2 className="text-2xl font-bold mb-4">Update Product</h2>
+        <form onSubmit={handleSearchProduct} className="bg-white p-4 rounded shadow-md mb-4">
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Product ID</label>
+            <input
+              type="text"
+              value={searchId}
+              onChange={(e) => setSearchId(e.target.value)}
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required
+            />
+          </div>
+          <button type="submit" className="w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
+            Search Product
+          </button>
+        </form>
+
+        {productNotFound && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <strong className="font-bold">Product not found!</strong>
+            <span className="block sm:inline"> Please search for a valid product ID.</span>
+          </div>
+        )}
+
+        {editingProduct && !productNotFound && (
+          <form onSubmit={handleUpdateProduct} className="bg-white p-4 rounded shadow-md mb-4">
+            {Object.keys(editingProduct).map((key) => (
+              key !== 'reviews' && key !== 'dimensions' && (
+                <div className="mb-4" key={key}>
+                  <label className="block text-sm font-medium text-gray-700">{key.replace(/_/g, ' ').toUpperCase()}</label>
+                  <input
+                    type="text"
+                    name={key}
+                    value={editingProduct[key]}
+                    onChange={handleEditInputChange}
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  />
+                </div>
+              )
+            ))}
+            <h3 className="text-xl font-bold mb-2">Dimensions</h3>
+            {Object.keys(editingProduct.dimensions).map((key) => (
+              <div className="mb-4" key={key}>
+                <label className="block text-sm font-medium text-gray-700">{key.replace(/_/g, ' ').toUpperCase()}</label>
+                <input
+                  type="text"
+                  name={key}
+                  value={editingProduct.dimensions[key]}
+                  onChange={handleDimensionChange}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+            ))}
+            <button type="submit" className="w-full bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600">
+              Update Product
+            </button>
+          </form>
+        )}
+
+        {editingProduct && editingProduct.reviews && (
+          <div className="bg-white p-4 rounded shadow-md">
+            <h3 className="text-xl font-bold mb-4">Reviews</h3>
+            {editingProduct.reviews.map((review, index) => (
+              <div key={index} className="mb-4 p-4 border border-gray-300 rounded-md">
+                <h4 className="text-lg font-semibold mb-2">Review {index + 1}</h4>
+                {Object.keys(review).map((key) => (
+                  <div className="mb-2" key={key}>
+                    <label className="block text-sm font-medium text-gray-700">{key.replace(/_/g, ' ').toUpperCase()}</label>
+                    <input
+                      type="text"
+                      name={key}
+                      value={review[key]}
+                      onChange={(e) => handleReviewChange(e, index)}
+                      className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    />
+                  </div>
+                ))}
+                <button onClick={() => handleRemoveReview(index)} className="w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 mt-2">
+                  Remove Review
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      <Footer />
+    </>
+  );
+};
+
+export default UpdateProduct;

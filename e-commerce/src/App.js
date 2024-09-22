@@ -14,6 +14,9 @@ import FavoritesPage from './pages/FavoritesPage';
 import Profile from './pages/Profile';
 import AdminPage from './pages/AdminPage';
 import ProductCRUD from './pages/ProductCRUD';
+import AddProduct from './services/AddProduct';
+import DeleteProduct from './services/DeleteProduct';
+import UpdateProduct from './services/UpdateProduct';
 
 function App() {
   return (
@@ -31,6 +34,9 @@ function App() {
           <Route path="/server-status" element={<ServerStatus />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/product-crud" element={<ProductCRUD />} />
+          <Route path="/add-product" element={<AddProduct />} />
+          <Route path="/delete-product" element={<DeleteProduct />} />
+          <Route path="/update-product" element={<UpdateProduct />} />
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/category/:category" element={<CategoryList />} />
