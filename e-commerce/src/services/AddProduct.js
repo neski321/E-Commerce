@@ -61,9 +61,9 @@ const AddProduct = () => {
       thumbnail: newProduct.thumbnail || 'https://via.placeholder.com/150',
       images: newProduct.images || {},  
       dimensions: {
-        width: newProduct.dimensions.width || 'N/A',
-        height: newProduct.dimensions.height || 'N/A',
-        depth: newProduct.dimensions.depth || 'N/A',
+        width: newProduct.dimensions.width || 0,
+        height: newProduct.dimensions.height || 0,
+        depth: newProduct.dimensions.depth || 0,
       }
     };
 

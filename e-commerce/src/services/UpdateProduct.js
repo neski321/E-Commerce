@@ -40,8 +40,10 @@ const UpdateProduct = () => {
         });
       }
   
-      if (response.data.length > 0) {
-        setEditingProduct(response.data[0]); 
+      // Check if the response contains data
+      if (response.data) {
+        // If searching by ID, response.data is an object, not an array
+        setEditingProduct(searchType === 'id' ? response.data : response.data[0]);
         setProductNotFound(false);
       } else {
         setProductNotFound(true);
