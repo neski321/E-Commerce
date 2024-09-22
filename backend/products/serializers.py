@@ -14,6 +14,7 @@ class DimensionSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     reviews = ReviewSerializer(many=True, required=False)
     dimensions = DimensionSerializer(required=False)
+    id = serializers.ReadOnlyField()
 
     class Meta:
         model = Product

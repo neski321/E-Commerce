@@ -1,9 +1,10 @@
 # backend/models.py
 
+import random
 from django.db import models
 
 class Product(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.IntegerField(primary_key=True, editable=False)
     title = models.CharField(max_length=255)
     description = models.TextField()
     category = models.CharField(max_length=100)
@@ -24,6 +25,17 @@ class Product(models.Model):
     
     def __str__(self):
         return self.title
+    
+    def save(self, *args, **kwargs):
+        if not self.id:  # Check if this is a new product
+            self.id = self.generate_unique_id()  # a unique random ID
+        super(Product, self).save(*args, **kwargs)
+
+    def generate_unique_id(self):
+        while True:
+            random_id = random.randint(10000, 99999)  # random 5-digit number
+            if not Product.objects.filter(id=random_id).exists():  # unique
+                return random_id
     
 class Review(models.Model):
     product = models.ForeignKey(Product, related_name='reviews', on_delete=models.CASCADE)
