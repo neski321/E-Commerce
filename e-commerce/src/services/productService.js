@@ -20,14 +20,21 @@ export const getCategoriesFromProducts = (products) => {
 
 export const addProduct = async (productData) => {
     try {
+      console.log('Product Data Sent:', productData);  // Log the product data before sending it
+  
       const response = await axios.post(`${API_URL}/products/`, productData);
-      
-      // Log the returned product URL
-      console.log('Product created at:', response.data.product_url);
-      
+  
+      // Log the entire response
+      console.log('Response from Server:', response.data);
+  
       return response.data;
     } catch (error) {
-      console.error('Error adding product:', error);
+      // Log the error response from the backend
+      if (error.response) {
+        console.error('Error Response from Server:', error.response.data);
+      } else {
+        console.error('Error adding product:', error.message);
+      }
       throw error;
     }
   };

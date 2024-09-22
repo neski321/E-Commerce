@@ -38,6 +38,9 @@ const AddProduct = () => {
   const handleAddProduct = async (e) => {
     e.preventDefault();
 
+    // Debug: Log the request payload
+    console.log('Request Payload (New Product):', newProduct);
+
     const preparedProduct = {
       ...newProduct,
       title: newProduct.title || 'N/A',

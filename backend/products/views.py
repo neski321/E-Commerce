@@ -55,7 +55,7 @@ def add_product(request):
     if serializer.is_valid():
         product = serializer.save()
         
-        product_url = request.build_absolute_uri(f'/products/{product.id}/')
+        # product_url = request.build_absolute_uri(f'/products/{product.id}/')
         
         # Handling reviews if provided
         reviews_data = request.data.get('reviews', [])
@@ -74,10 +74,11 @@ def add_product(request):
                 dimension_serializer.save()
         
         return Response({
-            'product': serializer.data,
-            'product_url': product_url
+            'product_url': f'/products/{product.id}/',
+            'product': serializer.data
         }, status=status.HTTP_201_CREATED)
     else:
+        print("Validation Errors:", serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(['PUT'])
