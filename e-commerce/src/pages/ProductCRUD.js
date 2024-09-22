@@ -7,18 +7,29 @@ const ProductCRUD = () => {
   return (
     <>
       <Navbar />
-      <div className="p-6 bg-gray-100 min-h-screen">
-        <h1 className="text-3xl font-bold mb-6">Product Control</h1>
-        <div className="flex flex-col space-y-4">
-          <Link to="/add-product" className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 text-center">
-            Add Product
-          </Link>
-          <Link to="/update-product" className="w-full bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600 text-center">
-            Update Product
-          </Link>
-          <Link to="/delete-product" className="w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 text-center">
-            Delete Product
-          </Link>
+      <div className="bg-gray-900 text-white min-h-screen">
+        <div className="container mx-auto py-12 px-4 text-center">
+          <h1 className="text-4xl font-bold mb-6">Product Control</h1>
+          <div className="flex flex-col space-y-6 items-center">
+            <Link
+              to="/add-product"
+              className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full text-lg font-semibold shadow-md transition duration-300 ease-in-out"
+            >
+              Add Product
+            </Link>
+            <Link
+              to="/update-product"
+              className="bg-yellow-500 hover:bg-yellow-600 text-white py-3 px-8 rounded-full text-lg font-semibold shadow-md transition duration-300 ease-in-out"
+            >
+              Update Product
+            </Link>
+            <Link
+              to="/delete-product"
+              className="bg-red-500 hover:bg-red-600 text-white py-3 px-8 rounded-full text-lg font-semibold shadow-md transition duration-300 ease-in-out"
+            >
+              Delete Product
+            </Link>
+          </div>
         </div>
       </div>
       <Footer />
