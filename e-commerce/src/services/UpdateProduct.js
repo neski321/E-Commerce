@@ -13,10 +13,12 @@ const UpdateProduct = () => {
   const [searchTitle, setSearchTitle] = useState('');
   const [searchType, setSearchType] = useState('id');
   const [productNotFound, setProductNotFound] = useState(false);
+  const [changedFields, setChangedFields] = useState({});
 
   const handleEditInputChange = (e) => {
     const { name, value } = e.target;
     setEditingProduct((prevState) => ({ ...prevState, [name]: value }));
+    setChangedFields((prevState) => ({ ...prevState, [name]: value }));
   };
 
   // function to handle
@@ -56,31 +58,42 @@ const UpdateProduct = () => {
     e.preventDefault();
     try {
       const updatedProduct = {
-        ...editingProduct,
-        reviews: editingProduct.reviews || [],  // Include reviews
-        dimensions: editingProduct.dimensions || {},  // Include dimensions
+        ...changedFields,
+        // reviews: editingProduct.reviews || [],  // Include reviews
+        // dimensions: editingProduct.dimensions || {},  // Include dimensions
       };
   
       // Debugging: Print the updated product data including reviews and dimensions
       console.log('Sending PATCH request with:', updatedProduct);
   
-      await updateProduct(updatedProduct.id, updatedProduct);
+      await updateProduct(editingProduct.id, updatedProduct);  // Call the PATCH API
       setEditingProduct(null);
+      setChangedFields({});  // Reset the changed fields after updating
       alert('Product updated successfully');
     } catch (error) {
-      console.error('Error updating product:', error);
+      console.error('Error updating product with PATCH:', error);
     }
   };
 
   const handleDimensionChange = (e) => {
     const { name, value } = e.target;
-    setEditingProduct({
-      ...editingProduct,
+  
+    setEditingProduct((prevState) => ({
+      ...prevState,
       dimensions: {
-        ...editingProduct.dimensions,
-        [name]: value
+        ...prevState.dimensions,
+        [name]: value,
       },
-    });
+    }));
+  
+    // Track the changed dimensions
+    setChangedFields((prevState) => ({
+      ...prevState,
+      dimensions: {
+        ...prevState.dimensions,
+        [name]: value,
+      },
+    }));
   };
 
   const handleReviewChange = (e, index) => {
