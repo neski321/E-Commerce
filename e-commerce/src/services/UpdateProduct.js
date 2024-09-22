@@ -55,7 +55,15 @@ const UpdateProduct = () => {
   const handleUpdateProduct = async (e) => {
     e.preventDefault();
     try {
-      const { reviews, dimensions, ...updatedProduct } = editingProduct; 
+      const updatedProduct = {
+        ...editingProduct,
+        reviews: editingProduct.reviews || [],  // Include reviews
+        dimensions: editingProduct.dimensions || {},  // Include dimensions
+      };
+  
+      // Debugging: Print the updated product data including reviews and dimensions
+      console.log('Updated Product:', updatedProduct);
+  
       await updateProduct(updatedProduct.id, updatedProduct);
       setEditingProduct(null);
       alert('Product updated successfully');
@@ -71,7 +79,7 @@ const UpdateProduct = () => {
       dimensions: {
         ...editingProduct.dimensions,
         [name]: value
-      }
+      },
     });
   };
 
@@ -108,6 +116,16 @@ const UpdateProduct = () => {
     } catch (error) {
       console.error('Error removing review:', error);
     }
+  };
+
+  const handleAddReview = () => {
+    setEditingProduct((prevState) => ({
+      ...prevState,
+      reviews: [
+        ...prevState.reviews,
+        { rating: '', comment: '', reviewer_name: '', reviewer_email: '' },
+      ],
+    }));
   };
 
   return (
@@ -190,7 +208,7 @@ const UpdateProduct = () => {
               )
             ))}
             <h3 className="text-xl font-bold mb-2">Dimensions</h3>
-            {Object.keys(editingProduct.dimensions).map((key) => (
+            {editingProduct.dimensions && Object.keys(editingProduct.dimensions).map((key) => (
               <div className="mb-4" key={key}>
                 <label className="block text-sm font-medium text-gray-700">{key.replace(/_/g, ' ').toUpperCase()}</label>
                 <input
@@ -203,6 +221,7 @@ const UpdateProduct = () => {
                 />
               </div>
             ))}
+
             <button type="submit" className="w-full bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600">
               Update Product
             </button>
@@ -232,6 +251,9 @@ const UpdateProduct = () => {
                 </button>
               </div>
             ))}
+            <button onClick={handleAddReview} className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 mt-2">
+              Add Review
+            </button>
           </div>
         )}
       </div>

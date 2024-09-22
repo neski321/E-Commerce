@@ -20,21 +20,20 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def update(self, instance, validated_data):
-        # Update or create nested reviews
-        reviews_data = validated_data.pop('reviews', None)
-        if reviews_data is not None:
-            instance.reviews.all().delete()
-            for review_data in reviews_data:
-                # Avoid conflicts with the product foreign key
-                review_data.pop('product', None)
-                Review.objects.create(product=instance, **review_data)
-
         # Update or create dimensions
         dimensions_data = validated_data.pop('dimensions', None)
-        if dimensions_data is not None:
+        if dimensions_data:
             Dimension.objects.update_or_create(product=instance, defaults=dimensions_data)
 
-        # Update other fields of the product
+        # Update reviews
+        reviews_data = validated_data.pop('reviews', [])
+        if reviews_data:
+            instance.reviews.all().delete()  # Remove all old reviews
+            for review_data in reviews_data:
+                review_data.pop('product', None)  # Avoid conflict
+                Review.objects.create(product=instance, **review_data)
+
+        # Update other product fields
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
