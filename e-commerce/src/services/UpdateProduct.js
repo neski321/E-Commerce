@@ -28,7 +28,7 @@ const UpdateProduct = () => {
       let response;
   
       if (searchType === 'id') {
-        // Search by Product ID (fetch by id in the URL)
+        // Search by Product ID 
         response = await axios.get(`${API_URL}/products/${searchId}/`);
       } else if (searchType === 'title') {
         // Search by Product Title
@@ -42,7 +42,7 @@ const UpdateProduct = () => {
   
       // Check if the response contains data
       if (response.data) {
-        // If searching by ID, response.data is an object, not an array
+
         setEditingProduct(searchType === 'id' ? response.data : response.data[0]);
         setProductNotFound(false);
       } else {
@@ -65,12 +65,12 @@ const UpdateProduct = () => {
         // dimensions: editingProduct.dimensions || {},  // Include dimensions
       };
   
-      // Debugging: Print the updated product data including reviews and dimensions
+      // Debugging: 
       console.log('Sending PATCH request with:', updatedProduct);
   
-      await updateProduct(editingProduct.id, updatedProduct);  // Call the PATCH API
+      await updateProduct(editingProduct.id, updatedProduct);  // Call the PATCH method
       setEditingProduct(null);
-      setChangedFields({});  // Reset the changed fields after updating
+      setChangedFields({});  // Reset the changed fields
       alert('Product updated successfully');
     } catch (error) {
       console.error('Error updating product with PATCH:', error);
@@ -88,7 +88,7 @@ const UpdateProduct = () => {
       },
     }));
   
-    // Track the changed dimensions
+    // Track changed dimensions
     setChangedFields((prevState) => ({
       ...prevState,
       dimensions: {
