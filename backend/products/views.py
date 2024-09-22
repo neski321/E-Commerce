@@ -55,6 +55,8 @@ def add_product(request):
     if serializer.is_valid():
         product = serializer.save()
         
+        product_url = request.build_absolute_uri(f'/products/{product.id}/')
+        
         # Handling reviews if provided
         reviews_data = request.data.get('reviews', [])
         for review_data in reviews_data:
@@ -71,7 +73,10 @@ def add_product(request):
             if dimension_serializer.is_valid():
                 dimension_serializer.save()
         
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response({
+            'product': serializer.data,
+            'product_url': product_url
+        }, status=status.HTTP_201_CREATED)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     

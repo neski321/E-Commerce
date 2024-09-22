@@ -18,15 +18,19 @@ export const getCategoriesFromProducts = (products) => {
   return categories;
 };
 
-export const addProduct = async (product) => {
+export const addProduct = async (productData) => {
     try {
-        const response = await axios.post(`${API_URL}/products/`, product);
-        return response.data;
+      const response = await axios.post(`${API_URL}/products/`, productData);
+      
+      // Log the returned product URL
+      console.log('Product created at:', response.data.product_url);
+      
+      return response.data;
     } catch (error) {
-        console.error('Error adding product:', error);
-        throw error;
+      console.error('Error adding product:', error);
+      throw error;
     }
-};
+  };
 
 export const updateProduct = async (id, updatedProduct) => {
     try {
