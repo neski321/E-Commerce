@@ -21,6 +21,7 @@ class Command(BaseCommand):
                 title=item['title'],
                 category=item['category'],
                 defaults={
+                    'id': item['id'],
                     'price': item['price'],
                     'thumbnail': item['thumbnail'],
                     'images': item['images'],
