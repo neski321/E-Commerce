@@ -23,7 +23,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 
         # Filter by product ID if it exists
         if product_id:
-            queryset = queryset.filter(id=product_id)
+            queryset = queryset.filter(Q(id__exact=product_id))
 
         # Filter by search query (regular or advanced) if product ID is not provided
         elif search_query:
