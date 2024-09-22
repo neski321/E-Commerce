@@ -18,6 +18,25 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
+        
+    def create(self, validated_data):
+        # Handle dimensions and reviews
+        dimensions_data = validated_data.pop('dimensions', None)
+        reviews_data = validated_data.pop('reviews', [])
+
+        # Create the product
+        product = Product.objects.create(**validated_data)
+
+        # dimensions 
+        if dimensions_data:
+            Dimension.objects.create(product=product, **dimensions_data)
+
+        #  reviews 
+        for review_data in reviews_data:
+            review_data.pop('product', None)  #  Avoid conflict
+            Review.objects.create(product=product, **review_data)
+
+        return product
 
     def update(self, instance, validated_data):
         # Update or create dimensions
@@ -28,7 +47,7 @@ class ProductSerializer(serializers.ModelSerializer):
         # Update reviews
         reviews_data = validated_data.pop('reviews', [])
         if reviews_data:
-            instance.reviews.all().delete()  # Remove all old reviews
+            instance.reviews.all().delete()
             for review_data in reviews_data:
                 review_data.pop('product', None)  # Avoid conflict
                 Review.objects.create(product=instance, **review_data)

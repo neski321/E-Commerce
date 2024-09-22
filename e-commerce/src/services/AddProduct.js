@@ -37,8 +37,35 @@ const AddProduct = () => {
 
   const handleAddProduct = async (e) => {
     e.preventDefault();
+
+    const preparedProduct = {
+      ...newProduct,
+      title: newProduct.title || 'N/A',
+      description: newProduct.description || 'N/A',
+      category: newProduct.category || 'N/A',
+      price: newProduct.price || 0,
+      discount_percentage: newProduct.discount_percentage || 0,
+      rating: newProduct.rating || 0,
+      stock: newProduct.stock || 0,
+      brand: newProduct.brand || 'N/A',
+      sku: newProduct.sku || 'N/A',
+      weight: newProduct.weight || 0,
+      warranty_information: newProduct.warranty_information || 'N/A',
+      shipping_information: newProduct.shipping_information || 'N/A',
+      availability_status: newProduct.availability_status || 'N/A',
+      return_policy: newProduct.return_policy || 'N/A',
+      minimum_order_quantity: newProduct.minimum_order_quantity || 1,
+      thumbnail: newProduct.thumbnail || 'https://via.placeholder.com/150',
+      images: newProduct.images || {},  
+      dimensions: {
+        width: newProduct.dimensions.width || 'N/A',
+        height: newProduct.dimensions.height || 'N/A',
+        depth: newProduct.dimensions.depth || 'N/A',
+      }
+    };
+
     try {
-      await addProduct(newProduct);
+      await addProduct(preparedProduct);
       setNewProduct({
         title: '',
         description: '',
@@ -73,12 +100,11 @@ const AddProduct = () => {
     <>
       <Navbar />
       <div className="p-6 bg-gray-100 min-h-screen">
-
-      <Link to="/product-crud" className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 text-center">
-            Back to Product Control
-          </Link>
-          <br></br>
-          <br></br>
+        <Link to="/product-crud" className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 text-center">
+          Back to Product Control
+        </Link>
+        <br />
+        <br />
 
         <h2 className="text-2xl font-bold mb-4">Add Product</h2>
         <form onSubmit={handleAddProduct} className="bg-white p-4 rounded shadow-md">
