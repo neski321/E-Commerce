@@ -38,9 +38,6 @@ const AddProduct = () => {
   const handleAddProduct = async (e) => {
     e.preventDefault();
 
-    // Debug: 
-    console.log('Request Payload (New Product):', newProduct);
-
     const preparedProduct = {
       ...newProduct,
       title: newProduct.title || 'N/A',
@@ -102,44 +99,46 @@ const AddProduct = () => {
   return (
     <>
       <Navbar />
-      <div className="bg-gray-900 text-white min-h-screen">
-        <div className="container mx-auto py-12 px-4 text-center">
-          <Link to="/product-crud" className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full text-lg font-semibold shadow-md transition duration-300 ease-in-out">
+      <div className="p-6 bg-gray-900 text-white min-h-screen flex justify-center items-center">
+        <div className="container max-w-lg mx-auto bg-white p-6 rounded shadow-lg">
+          <Link to="/product-crud" className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 text-center mb-6 block">
             Back to Product Control
           </Link>
-          <br />
-          <br />
-          <h2 className="text-4xl font-bold mb-6">Add Product</h2>
 
-          <form onSubmit={handleAddProduct} className="bg-white p-6 rounded shadow-md mx-auto w-full max-w-2xl text-left">
+          <h2 className="text-3xl font-bold mb-6 text-center text-gray-900">Add Product</h2>
+
+          <form onSubmit={handleAddProduct} className="space-y-4">
             {Object.keys(newProduct).map((key) => (
               key !== 'reviews' && key !== 'dimensions' && (
                 <div className="mb-4" key={key}>
-                  <label className="block text-sm font-medium text-gray-700">{key.replace(/_/g, ' ').toUpperCase()}</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{key.replace(/_/g, ' ').toUpperCase()}</label>
                   <input
                     type="text"
                     name={key}
                     value={newProduct[key]}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="w-full bg-gray-200 border border-gray-300 rounded-md py-2 px-3 text-gray-900 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all"
+                    style={{ transition: 'width 0.4s ease-in-out', minWidth: '150px', maxWidth: '100%' }} 
                   />
                 </div>
               )
             ))}
 
-            <h3 className="text-xl font-bold mb-2">Dimensions</h3>
+            <h3 className="text-xl font-bold mb-2 text-gray-900">Dimensions</h3>
             {Object.keys(newProduct.dimensions).map((key) => (
               <div className="mb-4" key={key}>
-                <label className="block text-sm font-medium text-gray-700">{key.replace(/_/g, ' ').toUpperCase()}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{key.replace(/_/g, ' ').toUpperCase()}</label>
                 <input
                   type="text"
                   name={key}
                   value={newProduct.dimensions[key]}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="w-full bg-gray-200 border border-gray-300 rounded-md py-2 px-3 text-gray-900 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all"
+                  style={{ transition: 'width 0.4s ease-in-out', minWidth: '150px', maxWidth: '100%' }}
                 />
               </div>
             ))}
+
             <button type="submit" className="w-full bg-blue-500 text-white py-3 px-8 rounded-full hover:bg-blue-600 transition duration-300 ease-in-out">
               Add Product
             </button>
