@@ -59,7 +59,7 @@ const AddProduct = () => {
       return_policy: newProduct.return_policy || 'N/A',
       minimum_order_quantity: newProduct.minimum_order_quantity || 1,
       thumbnail: newProduct.thumbnail || 'https://via.placeholder.com/150',
-      images: newProduct.images || {},  
+      images: newProduct.images || {},
       dimensions: {
         width: newProduct.dimensions.width || 0.0,
         height: newProduct.dimensions.height || 0.0,
@@ -102,46 +102,49 @@ const AddProduct = () => {
   return (
     <>
       <Navbar />
-      <div className="p-6 bg-gray-100 min-h-screen">
-        <Link to="/product-crud" className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 text-center">
-          Back to Product Control
-        </Link>
-        <br />
-        <br />
+      <div className="bg-gray-900 text-white min-h-screen">
+        <div className="container mx-auto py-12 px-4 text-center">
+          <Link to="/product-crud" className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full text-lg font-semibold shadow-md transition duration-300 ease-in-out">
+            Back to Product Control
+          </Link>
+          <br />
+          <br />
+          <h2 className="text-4xl font-bold mb-6">Add Product</h2>
 
-        <h2 className="text-2xl font-bold mb-4">Add Product</h2>
-        <form onSubmit={handleAddProduct} className="bg-white p-4 rounded shadow-md">
-          {Object.keys(newProduct).map((key) => (
-            key !== 'reviews' && key !== 'dimensions' && (
+          <form onSubmit={handleAddProduct} className="bg-white p-6 rounded shadow-md mx-auto w-full max-w-2xl text-left">
+            {Object.keys(newProduct).map((key) => (
+              key !== 'reviews' && key !== 'dimensions' && (
+                <div className="mb-4" key={key}>
+                  <label className="block text-sm font-medium text-gray-700">{key.replace(/_/g, ' ').toUpperCase()}</label>
+                  <input
+                    type="text"
+                    name={key}
+                    value={newProduct[key]}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  />
+                </div>
+              )
+            ))}
+
+            <h3 className="text-xl font-bold mb-2">Dimensions</h3>
+            {Object.keys(newProduct.dimensions).map((key) => (
               <div className="mb-4" key={key}>
                 <label className="block text-sm font-medium text-gray-700">{key.replace(/_/g, ' ').toUpperCase()}</label>
                 <input
                   type="text"
                   name={key}
-                  value={newProduct[key]}
+                  value={newProduct.dimensions[key]}
                   onChange={handleInputChange}
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
               </div>
-            )
-          ))}
-          <h3 className="text-xl font-bold mb-2">Dimensions</h3>
-          {Object.keys(newProduct.dimensions).map((key) => (
-            <div className="mb-4" key={key}>
-              <label className="block text-sm font-medium text-gray-700">{key.replace(/_/g, ' ').toUpperCase()}</label>
-              <input
-                type="text"
-                name={key}
-                value={newProduct.dimensions[key]}
-                onChange={handleInputChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
-            </div>
-          ))}
-          <button type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
-            Add Product
-          </button>
-        </form>
+            ))}
+            <button type="submit" className="w-full bg-blue-500 text-white py-3 px-8 rounded-full hover:bg-blue-600 transition duration-300 ease-in-out">
+              Add Product
+            </button>
+          </form>
+        </div>
       </div>
       <Footer />
     </>
