@@ -129,6 +129,7 @@ const CheckoutPage = () => {
   const calculateTotal = () => {
     let subtotal = 0;
     let discountTotal = 0;
+    let discountPercentages = [];
   
     cart.forEach((item) => {
       const price = parseFloat(item.price) || 0;
@@ -137,22 +138,28 @@ const CheckoutPage = () => {
   
       const itemDiscount = price * discount * quantity;
       discountTotal += itemDiscount;
-      
+  
+      if (discount > 0) {
+        discountPercentages.push(`${(discount * 100).toFixed(0)}%`);
+      }
+  
       subtotal += (price * quantity) - itemDiscount;
     });
   
-    const tax = subtotal * 0.13; // 13% tax
+    const tax = subtotal * 0.13;
     const total = (subtotal + tax).toFixed(2);
   
     return {
       subtotal: subtotal.toFixed(2),
       discountTotal: discountTotal.toFixed(2),
+      discountPercentages: discountPercentages.join(", "),
       tax: tax.toFixed(2),
       total,
     };
   };
+  
+  const { subtotal, discountTotal, discountPercentages, tax, total } = calculateTotal();
 
-  const { subtotal, discountTotal, tax, total } = calculateTotal();
 
   const increaseQuantity = async (itemId) => {
     const updatedCart = cart.map(item => {
@@ -297,7 +304,7 @@ const CheckoutPage = () => {
             <span className="text-lg font-medium">${subtotal}</span>
           </div>
           <div className="flex justify-between mt-4">
-            <span className="text-lg">Discount:</span>
+            <span className="text-lg">Discount ({discountPercentages}):</span>
             <span className="text-lg font-medium">-${discountTotal}</span>
           </div>
           <div className="flex justify-between mt-4">
