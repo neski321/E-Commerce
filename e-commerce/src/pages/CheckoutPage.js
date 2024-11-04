@@ -12,6 +12,7 @@ const CheckoutPage = () => {
   const [cart, setCart] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [orderConfirmed, setOrderConfirmed] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const loadProfileInfo = async () => {
@@ -35,7 +36,7 @@ const CheckoutPage = () => {
         }
       } catch (error) {
         console.error("Error fetching billing and shipping info:", error);
-        alert("There was an error loading profile information.");
+        setError("There was an error loading profile information.");
       }
     };
 
@@ -54,7 +55,7 @@ const CheckoutPage = () => {
           console.error("Error fetching cart items:", error);
         }
       } else {
-        alert("You need to be logged in to view checkout items.");
+        setError("You need to be logged in to view checkout items.");
       }
     };
 
@@ -74,6 +75,19 @@ const CheckoutPage = () => {
   };
 
   const handleConfirmOrder = async () => {
+    setError('');  // Clear any previous error 
+
+    // Validation checks
+    if (cart.length === 0) {
+      setError('Your cart is empty. Please add items to your cart before confirming the order.');
+      return;
+    }
+
+    if (!billingInfo || !shippingInfo) {
+      setError('Both billing and shipping information are required to proceed.');
+      return;
+    }
+
     try {
       const orderData = {
         cartItems: cart,
@@ -86,15 +100,25 @@ const CheckoutPage = () => {
       await clearCheckoutList();
       setOrderConfirmed(true);
       localStorage.removeItem('cart');
-      alert('Order confirmed successfully!');
     } catch (error) {
       console.error('Error confirming order:', error);
-      alert('There was an error processing your order.');
+      setError('There was an error processing your order.');
+    }
+  };
+
+  const removeFromCheckout = async (itemId) => {
+    const user = auth.currentUser;
+    if (user) {
+      try {
+        await deleteDoc(doc(db, 'checkout', user.uid, 'items', itemId));
+        setCart(cart.filter(item => item.id !== itemId));
+      } catch (error) {
+        console.error('Error removing item from checkout:', error);
+      }
     }
   };
 
   const calculateTotal = () => {
-    console.log("Cart items:", cart);
     const subtotal = cart.reduce((acc, item) => {
         const price = parseFloat(item.price) || 0;
         const quantity = parseInt(item.quantity, 10) || 1;
@@ -141,6 +165,19 @@ const CheckoutPage = () => {
       <div className="container mx-auto p-6 bg-gray-100 min-h-screen">
         <h2 className="text-4xl font-extrabold mb-10 text-center text-blue-700">Checkout</h2>
 
+        {/* Error and Success Messages */}
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 text-center">
+            {error}
+          </div>
+        )}
+
+        {orderConfirmed && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6 text-center">
+            🎉 Order Confirmed! Thank you for your purchase.
+          </div>
+        )}
+
         {/* Billing Information */}
         <div className="bg-white p-6 rounded-lg shadow-lg mb-6 border-t-4 border-blue-500">
           <h3 className="text-2xl font-semibold mb-4 text-blue-600">Billing Address</h3>
@@ -175,58 +212,60 @@ const CheckoutPage = () => {
 
         {/* Order Summary */}
         <div className="bg-white p-6 rounded-lg shadow-lg mb-6 border-t-4 border-yellow-500">
-        <h3 className="text-2xl font-semibold mb-4 text-yellow-600">Order Summary</h3>
-        {cart.length > 0 ? (
+          <h3 className="text-2xl font-semibold mb-4 text-yellow-600">Order Summary</h3>
+          {cart.length > 0 ? (
             cart.map((item, index) => (
-            <div key={index} className="flex justify-between items-center mb-6 text-gray-800">
+              <div key={index} className="flex justify-between items-center mb-6 text-gray-800">
                 <div>
-                <div className="flex items-center">
+                  <div className="flex items-center">
                     <span className="font-bold mr-2">{index + 1}.</span>
                     <span className="font-medium text-lg">{item.name}</span>
-                </div>
-                <div className="flex items-center space-x-2 mt-2">
+                  </div>
+                  <div className="flex items-center space-x-2 mt-2">
                     <button onClick={() => decreaseQuantity(item.id)} className="px-3 py-1 bg-gray-300 rounded-full">
-                    -
+                      -
                     </button>
                     <span className="font-semibold text-lg">{item.quantity || 1}</span>
                     <button onClick={() => increaseQuantity(item.id)} className="px-3 py-1 bg-gray-300 rounded-full">
-                    +
+                      +
                     </button>
-                </div>
+                  </div>
                 </div>
                 <div className="text-lg font-semibold">${item.price}</div>
-            </div>
+                <button 
+                  onClick={() => removeFromCheckout(item.id)} 
+                  className="ml-4 bg-red-500 text-white px-3 py-1 rounded-full hover:bg-red-600"
+                >
+                  Remove
+                </button>
+              </div>
             ))
-        ) : (
+          ) : (
             <p className="text-red-500">Your cart is empty.</p>
-        )}
-        <hr className="my-4" />
-        <div className="flex justify-between mt-4">
+          )}
+          <hr className="my-4" />
+          <div className="flex justify-between mt-4">
             <span className="text-lg">Subtotal:</span>
             <span className="text-lg font-medium">${subtotal}</span>
-        </div>
-        <div className="flex justify-between mt-4">
+          </div>
+          <div className="flex justify-between mt-4">
             <span className="text-lg">Tax (13%):</span>
             <span className="text-lg font-medium">${tax}</span>
-        </div>
-        <div className="flex justify-between mt-4 font-bold">
+          </div>
+          <div className="flex justify-between mt-4 font-bold">
             <span className="text-xl">Total:</span>
             <span className="text-xl text-blue-700">${total}</span>
-        </div>
+          </div>
         </div>
 
         {/* Confirm Order Button */}
-        {!orderConfirmed ? (
+        {!orderConfirmed && (
           <button
             onClick={handleConfirmOrder}
             className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-full font-semibold shadow-md transition duration-300 ease-in-out mt-4"
           >
             Confirm Order
           </button>
-        ) : (
-          <p className="text-green-500 font-semibold mt-6 text-center text-lg">
-            🎉 Order Confirmed! Thank you for your purchase.
-          </p>
         )}
       </div>
       <Footer />

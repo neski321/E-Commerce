@@ -5,6 +5,7 @@ import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import { auth, db } from '../firebaseConfig';
 import { collection, addDoc, getDocs, deleteDoc, doc } from "firebase/firestore";
+import AlertModal from '../components/AlertModal';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -15,6 +16,7 @@ const SearchPage = () => {
   const [itemsPerPage] = useState(10);
   const [favorites, setFavorites] = useState([]);
   const [checkoutList, setCheckoutList] = useState([]);
+  const [alertMessage, setAlertMessage] = useState('');
 
   useEffect(() => {
     loadFavorites();
@@ -57,6 +59,10 @@ const SearchPage = () => {
     }
   };
 
+  const showAlert = (message) => {
+    setAlertMessage(message);
+  };
+
   const addToFavorites = async (product) => {
     const user = auth.currentUser;
     if (user) {
@@ -69,11 +75,12 @@ const SearchPage = () => {
           images: [product.thumbnail]
         });
         setFavorites([...favorites, product.id]);
+        showAlert('Added to favorites');
       } catch (error) {
         console.error('Error adding to favorites:', error);
       }
     } else {
-      alert('You need to be logged in to add favorites');
+      showAlert('You need to be logged in to add favorites');
     }
   };
 
@@ -88,6 +95,7 @@ const SearchPage = () => {
         if (favoriteItem) {
           await deleteDoc(doc(db, 'favorites', user.uid, 'products', favoriteItem.id));
           setFavorites(favorites.filter(id => id !== product.id));
+          showAlert('Removed from favorites');
         }
       } catch (error) {
         console.error('Error removing from favorites:', error);
@@ -107,11 +115,12 @@ const SearchPage = () => {
           images: [product.thumbnail]
         });
         setCheckoutList([...checkoutList, product.id]);
+        showAlert('Added to checkout list');
       } catch (error) {
         console.error('Error adding to checkout:', error);
       }
     } else {
-      alert('You need to be logged in to add items to checkout');
+      showAlert('You need to be logged in to add items to checkout');
     }
   };
 
@@ -126,6 +135,7 @@ const SearchPage = () => {
         if (checkoutItem) {
           await deleteDoc(doc(db, 'checkout', user.uid, 'items', checkoutItem.id));
           setCheckoutList(checkoutList.filter(id => id !== product.id));
+          showAlert('Removed from checkout list');
         }
       } catch (error) {
         console.error('Error removing from checkout:', error);
@@ -142,6 +152,7 @@ const SearchPage = () => {
   return (
     <>
       <Navbar />
+      {alertMessage && <AlertModal message={alertMessage} onClose={() => setAlertMessage('')} />}
       <div className="container mx-auto p-4">
         <h1 className="text-3xl font-bold mb-6 text-center">Search Products</h1>
         <form className="mb-6 flex flex-col items-center" onSubmit={(e) => handleSearch(e, 'regular')}>

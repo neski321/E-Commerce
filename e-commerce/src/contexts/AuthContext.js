@@ -64,14 +64,14 @@ export function AuthProvider({ children }) {
       
       if (userDoc.exists()) {
         const data = userDoc.data();
-        console.log("Billing and Shipping Info Retrieved:", data); // Debugging log
+        // console.log("Billing and Shipping Info Retrieved:", data); // Debugging log
         return data;
       } else {
         console.warn("User document does not exist.");
         return null;
       }
     } catch (error) {
-      console.error("Error fetching billing and shipping info:", error);
+      // console.error("Error fetching billing and shipping info:", error);
       return null;
     }
   }

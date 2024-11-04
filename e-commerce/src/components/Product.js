@@ -3,6 +3,7 @@ import { fetchProducts } from '../services/productService';
 import { Link } from 'react-router-dom';
 import { auth, db } from '../firebaseConfig';
 import { collection, addDoc, getDocs, deleteDoc, doc } from "firebase/firestore";
+import AlertModal from '../components/AlertModal';
 
 const Product = () => {
   const [products, setProducts] = useState([]);
@@ -10,6 +11,7 @@ const Product = () => {
   const [loaded, setLoaded] = useState(false);
   const [favorites, setFavorites] = useState([]);
   const [checkoutList, setCheckoutList] = useState([]);
+  const [alertMessage, setAlertMessage] = useState(''); // Alert message for modal
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -51,6 +53,10 @@ const Product = () => {
 
   const toggleFeaturedProducts = () => setShowFeaturedProducts(!showFeaturedProducts);
 
+  const showAlert = (message) => {
+    setAlertMessage(message);
+  };
+
   const addOrRemoveFromFavorites = async (product) => {
     const user = auth.currentUser;
     if (user) {
@@ -62,7 +68,7 @@ const Product = () => {
         if (favoriteItem) {
           await deleteDoc(doc(db, 'favorites', user.uid, 'products', favoriteItem.id));
           setFavorites(favorites.filter(id => id !== product.id));
-          alert('Removed from favorites');
+          showAlert('Removed from favorites');
         } else {
           await addDoc(favoritesRef, {
             productId: product.id,
@@ -71,14 +77,14 @@ const Product = () => {
             images: [product.thumbnail]
           });
           setFavorites([...favorites, product.id]);
-          alert('Added to favorites');
+          showAlert('Added to favorites');
         }
       } catch (error) {
         console.error('Error updating favorites:', error);
-        alert('Failed to update favorites');
+        showAlert('Failed to update favorites');
       }
     } else {
-      alert('You need to be logged in to manage favorites');
+      showAlert('You need to be logged in to manage favorites');
     }
   };
 
@@ -96,13 +102,13 @@ const Product = () => {
           images: [product.thumbnail]
         });
         setCheckoutList([...checkoutList, product.id]);
-        alert('Added to checkout list');
+        showAlert('Added to checkout list');
       } catch (error) {
         console.error('Error adding to checkout list:', error);
-        alert('Failed to add to checkout list');
+        showAlert('Failed to add to checkout list');
       }
     } else {
-      alert('You need to be logged in to add items to checkout');
+      showAlert('You need to be logged in to add items to checkout');
     }
   };
 
@@ -117,14 +123,14 @@ const Product = () => {
         if (checkoutItem) {
           await deleteDoc(doc(db, 'checkout', user.uid, 'items', checkoutItem.id));
           setCheckoutList(checkoutList.filter(id => id !== product.id));
-          alert('Removed from checkout list');
+          showAlert('Removed from checkout list');
         }
       } catch (error) {
         console.error('Error removing from checkout list:', error);
-        alert('Failed to remove from checkout list');
+        showAlert('Failed to remove from checkout list');
       }
     } else {
-      alert('You need to be logged in to manage checkout list');
+      showAlert('You need to be logged in to manage checkout list');
     }
   };
 
@@ -132,6 +138,9 @@ const Product = () => {
 
   return (
     <div className="px-6 py-8">
+      {alertMessage && (
+        <AlertModal message={alertMessage} onClose={() => setAlertMessage('')} />
+      )}
       <button onClick={toggleFeaturedProducts} className="bg-gray-200 text-2xl font-bold px-4 py-2 rounded hover:bg-gray-500">
         Featured Products
       </button>
