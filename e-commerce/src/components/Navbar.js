@@ -11,7 +11,7 @@ function Navbar() {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
-      // console.log("Current User Object:", user); // Log the user object for debugging
+      // console.log("Current User Object:", user); // Log the user debugging
       setCurrentUser(user);
     });
     return unsubscribe;

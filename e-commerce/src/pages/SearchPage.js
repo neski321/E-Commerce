@@ -112,7 +112,9 @@ const SearchPage = () => {
           productId: product.id,
           name: product.title,
           price: product.price,
-          images: [product.thumbnail]
+          images: [product.thumbnail],
+          discount: product.discount_percentage,  
+          stock: product.stock
         });
         setCheckoutList([...checkoutList, product.id]);
         showAlert('Added to checkout list');

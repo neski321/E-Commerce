@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext'; 
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { auth, db } from '../firebaseConfig';
@@ -7,12 +8,14 @@ import { collection, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firesto
 
 const CheckoutPage = () => {
   const { fetchBillingAndShippingInfo, placeOrder } = useAuth();
+  const navigate = useNavigate();
   const [billingInfo, setBillingInfo] = useState(null);
   const [shippingInfo, setShippingInfo] = useState(null);
   const [cart, setCart] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [orderConfirmed, setOrderConfirmed] = useState(false);
   const [error, setError] = useState('');
+  const [showProfileRedirect, setShowProfileRedirect] = useState(false);
 
   useEffect(() => {
     const loadProfileInfo = async () => {
@@ -83,8 +86,13 @@ const CheckoutPage = () => {
       return;
     }
 
-    if (!billingInfo || !shippingInfo) {
-      setError('Both billing and shipping information are required to proceed.');
+    // Check for alphanumeric characters in Address Line 1 for billing and shipping
+    const hasValidBillingInfo = billingInfo && /\w/.test(billingInfo.line1);
+    const hasValidShippingInfo = shippingInfo && /\w/.test(shippingInfo.line1);
+
+    if (!hasValidBillingInfo || !hasValidShippingInfo) {
+      setError('Both billing and shipping information are required before confirming the order.');
+      setShowProfileRedirect(true);
       return;
     }
 
@@ -119,31 +127,47 @@ const CheckoutPage = () => {
   };
 
   const calculateTotal = () => {
-    const subtotal = cart.reduce((acc, item) => {
-        const price = parseFloat(item.price) || 0;
-        const quantity = parseInt(item.quantity, 10) || 1;
-        return acc + price * quantity;
-      }, 0);
-    
+    let subtotal = 0;
+    let discountTotal = 0;
+  
+    cart.forEach((item) => {
+      const price = parseFloat(item.price) || 0;
+      const quantity = parseInt(item.quantity, 10) || 1;
+      const discount = item.discount ? parseFloat(item.discount) / 100 : 0;
+  
+      const itemDiscount = price * discount * quantity;
+      discountTotal += itemDiscount;
+      
+      subtotal += (price * quantity) - itemDiscount;
+    });
+  
     const tax = subtotal * 0.13; // 13% tax
     const total = (subtotal + tax).toFixed(2);
-    
-    return { subtotal: subtotal.toFixed(2), tax: tax.toFixed(2), total };
+  
+    return {
+      subtotal: subtotal.toFixed(2),
+      discountTotal: discountTotal.toFixed(2),
+      tax: tax.toFixed(2),
+      total,
+    };
   };
 
-  const { subtotal, tax, total } = calculateTotal();
+  const { subtotal, discountTotal, tax, total } = calculateTotal();
 
   const increaseQuantity = async (itemId) => {
     const updatedCart = cart.map(item => {
       if (item.id === itemId) {
-        const newQuantity = (item.quantity || 1) + 1;
-        updateDoc(doc(db, 'checkout', auth.currentUser.uid, 'items', itemId), { quantity: newQuantity });
+        const newQuantity = Math.min((item.quantity || 1) + 1, item.stock); // Limit to stock
+        if (newQuantity !== item.quantity) {
+          updateDoc(doc(db, 'checkout', auth.currentUser.uid, 'items', itemId), { quantity: newQuantity });
+        }
         return { ...item, quantity: newQuantity };
       }
       return item;
     });
     setCart(updatedCart);
   };
+
 
   const decreaseQuantity = async (itemId) => {
     const updatedCart = cart.map(item => {
@@ -175,6 +199,30 @@ const CheckoutPage = () => {
         {orderConfirmed && (
           <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6 text-center">
             🎉 Order Confirmed! Thank you for your purchase.
+          </div>
+        )}
+
+        {/* Redirect to Profile Modal */}
+        {showProfileRedirect && (
+          <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+              <h3 className="text-xl font-semibold text-red-600 mb-4">Incomplete Profile Information</h3>
+              <p className="text-gray-700 mb-4">
+                Please update your billing and shipping information in your profile and try again.
+              </p>
+              <button
+                onClick={() => navigate('/profile')}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                Go to Profile
+              </button>
+              <button
+                onClick={() => setShowProfileRedirect(false)}
+                className="ml-4 bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+              >
+                Close
+              </button>
+            </div>
           </div>
         )}
 
@@ -247,6 +295,10 @@ const CheckoutPage = () => {
           <div className="flex justify-between mt-4">
             <span className="text-lg">Subtotal:</span>
             <span className="text-lg font-medium">${subtotal}</span>
+          </div>
+          <div className="flex justify-between mt-4">
+            <span className="text-lg">Discount:</span>
+            <span className="text-lg font-medium">-${discountTotal}</span>
           </div>
           <div className="flex justify-between mt-4">
             <span className="text-lg">Tax (13%):</span>

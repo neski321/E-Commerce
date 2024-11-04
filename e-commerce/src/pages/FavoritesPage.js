@@ -16,7 +16,7 @@ const FavoritesPage = () => {
                 const favoritesSnapshot = await getDocs(favoritesRef);
                 const favoritesList = favoritesSnapshot.docs.map(doc => ({
                     ...doc.data(),
-                    id: doc.id  // Store document ID for deletion reference
+                    id: doc.id  // Store document ID for deletion ref
                 }));
                 setFavorites(favoritesList);
             }

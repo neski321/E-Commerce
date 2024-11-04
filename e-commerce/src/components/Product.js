@@ -98,9 +98,13 @@ const Product = () => {
         await addDoc(checkoutRef, {
           productId: product.id,
           name: product.title,
-          price: product.price,
-          images: [product.thumbnail]
+          price: product.price,          
+          discount: product.discount_percentage,  
+          stock: product.stock,
+          images: [product.thumbnail] 
         });
+
+        console.log(product.discount_percentage);
         setCheckoutList([...checkoutList, product.id]);
         showAlert('Added to checkout list');
       } catch (error) {
