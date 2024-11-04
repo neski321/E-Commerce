@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { fetchProducts } from '../services/productService';
 import { Link } from 'react-router-dom';
 import { auth, db } from '../firebaseConfig';
-import { collection, addDoc, getDocs } from "firebase/firestore"; 
+import { collection, addDoc, getDocs, deleteDoc, doc } from "firebase/firestore";
 
 const Product = () => {
   const [products, setProducts] = useState([]);
   const [showFeaturedProducts, setShowFeaturedProducts] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [favorites, setFavorites] = useState([]);
+  const [checkoutList, setCheckoutList] = useState([]);
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -30,38 +31,104 @@ const Product = () => {
       }
     };
 
+    const loadCheckoutList = async () => {
+      const user = auth.currentUser;
+      if (user) {
+        const checkoutRef = collection(db, 'checkout', user.uid, 'items');
+        const querySnapshot = await getDocs(checkoutRef);
+        const checkoutProducts = querySnapshot.docs.map(doc => doc.data().productId);
+        setCheckoutList(checkoutProducts);
+      }
+    };
+
     if (!loaded) {
       loadProducts();
       loadFavorites();
+      loadCheckoutList();
       setLoaded(true);
     }
   }, [loaded]);
 
   const toggleFeaturedProducts = () => setShowFeaturedProducts(!showFeaturedProducts);
 
-  const addToFavorites = async (product) => {
+  const addOrRemoveFromFavorites = async (product) => {
     const user = auth.currentUser;
     if (user) {
       try {
         const favoritesRef = collection(db, 'favorites', user.uid, 'products');
-        await addDoc(favoritesRef, {
+        const querySnapshot = await getDocs(favoritesRef);
+        const favoriteItem = querySnapshot.docs.find(doc => doc.data().productId === product.id);
+
+        if (favoriteItem) {
+          await deleteDoc(doc(db, 'favorites', user.uid, 'products', favoriteItem.id));
+          setFavorites(favorites.filter(id => id !== product.id));
+          alert('Removed from favorites');
+        } else {
+          await addDoc(favoritesRef, {
+            productId: product.id,
+            name: product.title,
+            price: product.price,
+            images: [product.thumbnail]
+          });
+          setFavorites([...favorites, product.id]);
+          alert('Added to favorites');
+        }
+      } catch (error) {
+        console.error('Error updating favorites:', error);
+        alert('Failed to update favorites');
+      }
+    } else {
+      alert('You need to be logged in to manage favorites');
+    }
+  };
+
+  const isFavorite = (productId) => favorites.includes(productId);
+
+  const addToCheckout = async (product) => {
+    const user = auth.currentUser;
+    if (user) {
+      try {
+        const checkoutRef = collection(db, 'checkout', user.uid, 'items');
+        await addDoc(checkoutRef, {
           productId: product.id,
           name: product.title,
           price: product.price,
           images: [product.thumbnail]
         });
-        setFavorites([...favorites, product.id]);
-        alert('Added to favorites');
+        setCheckoutList([...checkoutList, product.id]);
+        alert('Added to checkout list');
       } catch (error) {
-        console.error('Error adding to favorites:', error);
-        alert('Failed to add to favorites');
+        console.error('Error adding to checkout list:', error);
+        alert('Failed to add to checkout list');
       }
     } else {
-      alert('You need to be logged in to add favorites');
+      alert('You need to be logged in to add items to checkout');
     }
   };
 
-  const isFavorite = (productId) => favorites.includes(productId);
+  const removeFromCheckout = async (product) => {
+    const user = auth.currentUser;
+    if (user) {
+      try {
+        const checkoutRef = collection(db, 'checkout', user.uid, 'items');
+        const querySnapshot = await getDocs(checkoutRef);
+        const checkoutItem = querySnapshot.docs.find(doc => doc.data().productId === product.id);
+
+        if (checkoutItem) {
+          await deleteDoc(doc(db, 'checkout', user.uid, 'items', checkoutItem.id));
+          setCheckoutList(checkoutList.filter(id => id !== product.id));
+          alert('Removed from checkout list');
+        }
+      } catch (error) {
+        console.error('Error removing from checkout list:', error);
+        alert('Failed to remove from checkout list');
+      }
+    } else {
+      alert('You need to be logged in to manage checkout list');
+    }
+  };
+
+  const isInCheckout = (productId) => checkoutList.includes(productId);
 
   return (
     <div className="px-6 py-8">
@@ -84,11 +151,17 @@ const Product = () => {
               </button>
               <br />
               <button 
-                onClick={() => addToFavorites(product)} 
-                className={`mt-2 text-white px-4 py-2 rounded ${isFavorite(product.id) ? 'bg-gray-500' : 'bg-red-500'}`} 
-                disabled={isFavorite(product.id)}
+                onClick={() => addOrRemoveFromFavorites(product)} 
+                className={`mt-2 text-white px-4 py-2 rounded ${isFavorite(product.id) ? 'bg-gray-500' : 'bg-red-500'}`}
               >
-                {isFavorite(product.id) ? 'In Favorites' : 'Add to Favorites'}
+                {isFavorite(product.id) ? 'Remove from Favorites' : 'Add to Favorites'}
+              </button>
+              <br />
+              <button 
+                onClick={() => isInCheckout(product.id) ? removeFromCheckout(product) : addToCheckout(product)} 
+                className={`mt-2 text-white px-4 py-2 rounded ${isInCheckout(product.id) ? 'bg-green-500' : 'bg-blue-500'}`} 
+              >
+                {isInCheckout(product.id) ? 'Remove from Checkout' : 'Add to Checkout'}
               </button>
             </div>
           ))}

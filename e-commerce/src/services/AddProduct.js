@@ -100,40 +100,43 @@ const AddProduct = () => {
     <>
       <Navbar />
       <div className="p-6 bg-gray-900 text-white min-h-screen flex justify-center items-center">
-        <div className="container max-w-lg mx-auto bg-white p-6 rounded shadow-lg">
+        <div className="container max-w-lg mx-auto bg-gray-800 p-6 rounded shadow-lg">
           <Link to="/product-crud" className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 text-center mb-6 block">
             Back to Product Control
           </Link>
 
-          <h2 className="text-3xl font-bold mb-6 text-center text-gray-900">Add Product</h2>
+          <h2 className="text-3xl font-bold mb-6 text-center text-white">Add Product</h2>
 
           <form onSubmit={handleAddProduct} className="space-y-4">
             {Object.keys(newProduct).map((key) => (
               key !== 'reviews' && key !== 'dimensions' && (
                 <div className="mb-4" key={key}>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{key.replace(/_/g, ' ').toUpperCase()}</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">{key.replace(/_/g, ' ').toUpperCase()}</label>
                   <input
                     type="text"
                     name={key}
                     value={newProduct[key]}
                     onChange={handleInputChange}
-                    className="w-full bg-gray-200 border border-gray-300 rounded-md py-2 px-3 text-gray-900 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all"
-                    style={{ transition: 'width 0.4s ease-in-out', minWidth: '150px', maxWidth: '100%' }} 
+                    className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all"
+                    style={{ transition: 'width 0.4s ease-in-out', minWidth: '150px', maxWidth: '100%' }}
                   />
                 </div>
               )
             ))}
 
-            <h3 className="text-xl font-bold mb-2 text-gray-900">Dimensions</h3>
+            <h3 className="text-xl font-bold mb-2 text-white">Dimensions</h3>
             {Object.keys(newProduct.dimensions).map((key) => (
               <div className="mb-4" key={key}>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{key.replace(/_/g, ' ').toUpperCase()}</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">{key.replace(/_/g, ' ').toUpperCase()}</label>
                 <input
                   type="text"
                   name={key}
                   value={newProduct.dimensions[key]}
-                  onChange={handleInputChange}
-                  className="w-full bg-gray-200 border border-gray-300 rounded-md py-2 px-3 text-gray-900 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all"
+                  onChange={(e) => setNewProduct((prevState) => ({
+                    ...prevState,
+                    dimensions: { ...prevState.dimensions, [key]: e.target.value }
+                  }))}
+                  className="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-white shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-all"
                   style={{ transition: 'width 0.4s ease-in-out', minWidth: '150px', maxWidth: '100%' }}
                 />
               </div>

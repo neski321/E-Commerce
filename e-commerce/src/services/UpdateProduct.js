@@ -25,16 +25,10 @@ const UpdateProduct = () => {
     e.preventDefault();
     try {
       let response;
-
       if (searchType === 'id') {
         response = await axios.get(`${API_URL}/products/${searchId}/`);
       } else if (searchType === 'title') {
-        response = await axios.get(`${API_URL}/products/`, {
-          params: {
-            search: searchTitle,
-            type: 'regular',
-          },
-        });
+        response = await axios.get(`${API_URL}/products/`, { params: { search: searchTitle, type: 'regular' } });
       }
 
       if (response.data) {
@@ -54,12 +48,7 @@ const UpdateProduct = () => {
   const handleUpdateProduct = async (e) => {
     e.preventDefault();
     try {
-      const updatedProduct = {
-        ...changedFields,
-      };
-
-      console.log('Sending PATCH request with:', updatedProduct);
-
+      const updatedProduct = { ...changedFields };
       await updateProduct(editingProduct.id, updatedProduct);
       setEditingProduct(null);
       setChangedFields({});
@@ -71,21 +60,13 @@ const UpdateProduct = () => {
 
   const handleDimensionChange = (e) => {
     const { name, value } = e.target;
-
     setEditingProduct((prevState) => ({
       ...prevState,
-      dimensions: {
-        ...prevState.dimensions,
-        [name]: value,
-      },
+      dimensions: { ...prevState.dimensions, [name]: value },
     }));
-
     setChangedFields((prevState) => ({
       ...prevState,
-      dimensions: {
-        ...prevState.dimensions,
-        [name]: value,
-      },
+      dimensions: { ...prevState.dimensions, [name]: value },
     }));
   };
 
@@ -93,30 +74,20 @@ const UpdateProduct = () => {
     const { name, value } = e.target;
     setEditingProduct((prevState) => {
       const updatedReviews = [...prevState.reviews];
-      updatedReviews[index] = {
-        ...updatedReviews[index],
-        [name]: value,
-      };
-      return {
-        ...prevState,
-        reviews: updatedReviews,
-      };
+      updatedReviews[index] = { ...updatedReviews[index], [name]: value };
+      return { ...prevState, reviews: updatedReviews };
     });
   };
 
   const handleRemoveReview = async (index) => {
     const reviewId = editingProduct.reviews[index].id;
     const productId = editingProduct.id;
-
     try {
       await removeReview(productId, reviewId);
       setEditingProduct((prevState) => {
         const updatedReviews = [...prevState.reviews];
         updatedReviews.splice(index, 1);
-        return {
-          ...prevState,
-          reviews: updatedReviews,
-        };
+        return { ...prevState, reviews: updatedReviews };
       });
       alert('Review removed successfully');
     } catch (error) {
@@ -127,127 +98,126 @@ const UpdateProduct = () => {
   const handleAddReview = () => {
     setEditingProduct((prevState) => ({
       ...prevState,
-      reviews: [
-        ...prevState.reviews,
-        { rating: '', comment: '', reviewer_name: '', reviewer_email: '' },
-      ],
+      reviews: [...prevState.reviews, { rating: '', comment: '', reviewer_name: '', reviewer_email: '' }],
     }));
   };
 
   return (
     <>
       <Navbar />
-      <div className="bg-gray-900 text-white min-h-screen">
-        <div className="container mx-auto py-12 px-4 text-center">
-          <Link to="/product-crud" className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full text-lg font-semibold shadow-md transition duration-300 ease-in-out">
+      <div className="bg-gray-900 text-white min-h-screen py-12">
+        <div className="container mx-auto px-6">
+          <Link to="/product-crud" className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded mb-6 inline-block">
             Back to Product Control
           </Link>
-          <br />
-          <br />
-          <h2 className="text-4xl font-bold mb-6">Update Product</h2>
+          <h2 className="text-3xl font-bold text-center mb-10">Update Product</h2>
 
-          <form onSubmit={handleSearchProduct} className="bg-white p-6 rounded shadow-md mx-auto w-full max-w-2xl text-left">
+          {/* Search Product Form */}
+          <form onSubmit={handleSearchProduct} className="bg-gray-800 p-6 rounded shadow-lg mb-6 mx-auto max-w-xl text-left">
+            <h3 className="text-xl font-semibold mb-4">Search Product</h3>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Search By</label>
+              <label className="block text-sm font-medium text-gray-200">Search By</label>
               <select
                 value={searchType}
                 onChange={(e) => setSearchType(e.target.value)}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 block w-full p-2 bg-gray-700 text-white border border-gray-600 rounded-md shadow-sm"
               >
                 <option value="id">Product ID</option>
                 <option value="title">Product Title</option>
               </select>
             </div>
-
             {searchType === 'id' && (
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Product ID</label>
+                <label className="block text-sm font-medium text-gray-200">Product ID</label>
                 <input
                   type="text"
                   value={searchId}
                   onChange={(e) => setSearchId(e.target.value)}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full p-2 bg-gray-700 text-white border border-gray-600 rounded-md shadow-sm"
                   required
                 />
               </div>
             )}
-
             {searchType === 'title' && (
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Product Title</label>
+                <label className="block text-sm font-medium text-gray-200">Product Title</label>
                 <input
                   type="text"
                   value={searchTitle}
                   onChange={(e) => setSearchTitle(e.target.value)}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full p-2 bg-gray-700 text-white border border-gray-600 rounded-md shadow-sm"
                   required
                 />
               </div>
             )}
-
-            <button type="submit" className="w-full bg-green-500 text-white py-3 px-8 rounded-full hover:bg-green-600 transition duration-300 ease-in-out">
+            <button type="submit" className="w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600">
               Search Product
             </button>
           </form>
 
           {productNotFound && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-              <strong className="font-bold">Product not found!</strong>
-              <span className="block sm:inline"> Please search for a valid product ID or title.</span>
+            <div className="bg-red-800 border border-red-600 text-red-100 px-4 py-3 rounded relative mb-6">
+              <strong>Product not found!</strong> Please search for a valid product ID or title.
             </div>
           )}
 
-          {editingProduct && !productNotFound && (
-            <form onSubmit={handleUpdateProduct} className="bg-white p-6 rounded shadow-md mx-auto w-full max-w-2xl text-left mt-6">
-              {Object.keys(editingProduct).map((key) => (
-                key !== 'reviews' && key !== 'dimensions' && (
+          {/* Update Product Form */}
+          {editingProduct && (
+            <form onSubmit={handleUpdateProduct} className="bg-gray-800 p-6 rounded shadow-lg mx-auto max-w-xl text-left">
+              <h3 className="text-xl font-semibold mb-6">Edit Product Information</h3>
+              {Object.keys(editingProduct).map(
+                (key) =>
+                  key !== 'reviews' && key !== 'dimensions' && (
+                    <div className="mb-4" key={key}>
+                      <label className="block text-sm font-medium text-gray-200">{key.replace(/_/g, ' ').toUpperCase()}</label>
+                      <input
+                        type="text"
+                        name={key}
+                        value={editingProduct[key]}
+                        onChange={handleEditInputChange}
+                        className="mt-1 block w-full p-2 bg-gray-700 text-white border border-gray-600 rounded-md shadow-sm"
+                      />
+                    </div>
+                  )
+              )}
+
+              <h3 className="text-xl font-semibold mt-8 mb-4">Dimensions</h3>
+              {editingProduct.dimensions &&
+                Object.keys(editingProduct.dimensions).map((key) => (
                   <div className="mb-4" key={key}>
-                    <label className="block text-sm font-medium text-gray-700">{key.replace(/_/g, ' ').toUpperCase()}</label>
+                    <label className="block text-sm font-medium text-gray-200">{key.replace(/_/g, ' ').toUpperCase()}</label>
                     <input
                       type="text"
                       name={key}
-                      value={editingProduct[key]}
-                      onChange={handleEditInputChange}
-                      className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      value={editingProduct.dimensions[key]}
+                      onChange={handleDimensionChange}
+                      className="mt-1 block w-full p-2 bg-gray-700 text-white border border-gray-600 rounded-md shadow-sm"
                     />
                   </div>
-                )
-              ))}
-              <h3 className="text-xl font-bold mb-2">Dimensions</h3>
-              {editingProduct.dimensions && Object.keys(editingProduct.dimensions).map((key) => (
-                <div className="mb-4" key={key}>
-                  <label className="block text-sm font-medium text-gray-700">{key.replace(/_/g, ' ').toUpperCase()}</label>
-                  <input
-                    type="text"
-                    name={key}
-                    value={editingProduct.dimensions[key]}
-                    onChange={handleDimensionChange}
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  />
-                </div>
-              ))}
+                ))}
 
-              <button type="submit" className="w-full bg-yellow-500 text-white py-3 px-8 rounded-full hover:bg-yellow-600 transition duration-300 ease-in-out">
+              <button type="submit" className="w-full bg-yellow-500 text-white py-2 px-4 rounded hover:bg-yellow-600 mt-6">
                 Update Product
               </button>
             </form>
           )}
 
-          {editingProduct && editingProduct.reviews && (
-            <div className="bg-white p-6 rounded shadow-md mx-auto w-full max-w-2xl text-left mt-6">
-              <h3 className="text-xl font-bold mb-4">Reviews</h3>
+          {/* Reviews Section */}
+          {editingProduct?.reviews && (
+            <div className="bg-gray-800 p-6 rounded shadow-lg mx-auto max-w-xl mt-6">
+              <h3 className="text-xl font-semibold mb-6">Reviews</h3>
               {editingProduct.reviews.map((review, index) => (
-                <div key={index} className="mb-4 p-4 border border-gray-300 rounded-md">
+                <div key={index} className="mb-6 p-4 border border-gray-600 rounded-md">
                   <h4 className="text-lg font-semibold mb-2">Review {index + 1}</h4>
                   {Object.keys(review).map((key) => (
                     <div className="mb-2" key={key}>
-                      <label className="block text-sm font-medium text-gray-700">{key.replace(/_/g, ' ').toUpperCase()}</label>
+                      <label className="block text-sm font-medium text-gray-200">{key.replace(/_/g, ' ').toUpperCase()}</label>
                       <input
                         type="text"
                         name={key}
                         value={review[key]}
                         onChange={(e) => handleReviewChange(e, index)}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        className="mt-1 block w-full p-2 bg-gray-700 text-white border border-gray-600 rounded-md shadow-sm"
                       />
                     </div>
                   ))}

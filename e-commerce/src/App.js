@@ -17,6 +17,7 @@ import ProductCRUD from './pages/ProductCRUD';
 import AddProduct from './services/AddProduct';
 import DeleteProduct from './services/DeleteProduct';
 import UpdateProduct from './services/UpdateProduct';
+import CheckoutPage from './pages/CheckoutPage';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
           <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/category/:category" element={<CategoryList />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
         </Route>
       </Routes>
     </div>

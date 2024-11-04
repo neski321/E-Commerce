@@ -65,23 +65,24 @@ const DeleteProduct = () => {
   return (
     <>
       <Navbar />
-      <div className="bg-gray-900 text-white min-h-screen">
-        <div className="container mx-auto py-12 px-4 text-center">
-          <Link to="/product-crud" className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full text-lg font-semibold shadow-md transition duration-300 ease-in-out">
+      <div className="bg-gray-900 text-white min-h-screen flex flex-col items-center py-12">
+        <div className="w-full max-w-lg bg-gray-800 p-6 rounded-lg shadow-lg">
+          <Link
+            to="/product-crud"
+            className="block bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-full text-center mb-6 font-semibold transition duration-300 ease-in-out"
+          >
             Back to Product Control
           </Link>
-          <br />
-          <br />
 
-          <h2 className="text-4xl font-bold mb-6">Delete Product</h2>
+          <h2 className="text-3xl font-bold mb-6 text-center text-white">Delete Product</h2>
 
-          <form onSubmit={handleSearchProduct} className="bg-white p-6 rounded shadow-md mb-6 mx-auto w-full max-w-xl text-left">
+          <form onSubmit={handleSearchProduct} className="bg-gray-700 p-6 rounded shadow-md mb-6">
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Search By</label>
+              <label className="block text-sm font-medium text-gray-300">Search By</label>
               <select
                 value={searchType}
                 onChange={(e) => setSearchType(e.target.value)}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 block w-full p-2 bg-gray-600 border border-gray-500 rounded-md text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="id">Product ID</option>
                 <option value="title">Product Title</option>
@@ -90,12 +91,12 @@ const DeleteProduct = () => {
 
             {searchType === 'id' && (
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Product ID</label>
+                <label className="block text-sm font-medium text-gray-300">Product ID</label>
                 <input
                   type="text"
                   value={searchId}
                   onChange={(e) => setSearchId(e.target.value)}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full p-2 bg-gray-600 border border-gray-500 rounded-md text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   required
                 />
               </div>
@@ -103,31 +104,34 @@ const DeleteProduct = () => {
 
             {searchType === 'title' && (
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Product Title</label>
+                <label className="block text-sm font-medium text-gray-300">Product Title</label>
                 <input
                   type="text"
                   value={searchTitle}
                   onChange={(e) => setSearchTitle(e.target.value)}
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full p-2 bg-gray-600 border border-gray-500 rounded-md text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   required
                 />
               </div>
             )}
 
-            <button type="submit" className="w-full bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition duration-300 ease-in-out">
+            <button
+              type="submit"
+              className="w-full bg-green-500 text-white py-2 rounded-full hover:bg-green-600 transition duration-300 ease-in-out"
+            >
               Search Product
             </button>
           </form>
 
           {productNotFound && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6 mx-auto w-full max-w-xl" role="alert">
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md text-center mb-6">
               <strong className="font-bold">Product not found!</strong>
-              <span className="block sm:inline"> Please search for a valid product ID or title.</span>
+              <span className="block">Please search for a valid product ID or title.</span>
             </div>
           )}
 
           {editingProduct && (
-            <div className="bg-white p-6 rounded shadow-md mb-6 mx-auto w-full max-w-xl">
+            <div className="bg-gray-700 p-6 rounded-lg shadow-md text-white">
               <h3 className="text-2xl font-bold mb-4">Product to be Deleted</h3>
               <p className="mb-2"><strong>Product ID:</strong> {editingProduct.id}</p>
               <p className="mb-2"><strong>Title:</strong> {editingProduct.title}</p>
@@ -135,10 +139,10 @@ const DeleteProduct = () => {
               <p className="mb-2"><strong>Category:</strong> {editingProduct.category}</p>
               <p className="mb-4"><strong>Price:</strong> ${editingProduct.price}</p>
 
-              <form onSubmit={handleDeleteProduct} className="bg-white p-4 rounded-md shadow-md">
+              <form onSubmit={handleDeleteProduct}>
                 <button
                   type="submit"
-                  className="w-full bg-red-500 text-white py-2 px-4 rounded-full hover:bg-red-600 transition duration-300 ease-in-out"
+                  className="w-full bg-red-500 text-white py-2 rounded-full hover:bg-red-600 transition duration-300 ease-in-out"
                   disabled={!editingProduct}
                 >
                   Delete Product

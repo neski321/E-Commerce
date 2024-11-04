@@ -46,6 +46,9 @@ function Navbar() {
           <Link to="/server-status" className="text-gray-300 hover:text-white px-3 py-2">Server Status</Link>
           <Link to="/" className="text-gray-300 hover:text-white px-3 py-2">Home</Link>
           <Link to="/search" className="text-gray-300 hover:text-white px-3 py-2">Search</Link>
+          {currentUser && (
+            <Link to="/checkout" className="text-gray-300 hover:text-white px-3 py-2">Checkout</Link>
+          )}
           
           <div className="relative inline-block">
             <button onClick={toggleDropdown} className="bg-gray-700 text-white text-xl font-bold py-2 px-4 rounded-full">
@@ -54,8 +57,7 @@ function Navbar() {
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20">
                 <Link to="/profile" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Profile</Link>
-                <Link to="/favorites" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">My Favorites
-                </Link>
+                <Link to="/favorites" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">My Favorites</Link>
                 {role === 'admin' && (
                   <Link to="/admin" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Admin Access</Link>
                 )}
