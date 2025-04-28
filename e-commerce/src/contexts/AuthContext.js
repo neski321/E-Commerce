@@ -3,6 +3,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { auth, googleProvider, db } from '../firebaseConfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, signInWithPopup } from 'firebase/auth';
 import { doc, setDoc, getDoc, updateDoc, collection, addDoc } from 'firebase/firestore';
+import { Timestamp } from 'firebase/firestore';
 
 const AuthContext = React.createContext();
 
@@ -14,37 +15,40 @@ export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState();
   const [role, setRole] = useState('');
 
+  // Signup with Email and Password
   async function signup(email, password, role = 'user') {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
-    
-    // Store the user role in Firestore
     await setDoc(doc(db, 'users', user.uid), { 
       email: user.email,
       role,
     });
-
     return userCredential;
   }
 
+  // Login with Email and Password
   function login(email, password) {
     return signInWithEmailAndPassword(auth, email, password);
   }
 
+  // Google Sign-In
   function googleSignIn() {
     return signInWithPopup(auth, googleProvider);
   }
 
+  // Logout
   function logout() {
     return signOut(auth);
   }
 
+  // Update User Profile in Firestore
   async function updateProfile(data) {
     if (!currentUser) return;
     const userDocRef = doc(db, 'users', currentUser.uid);
     await updateDoc(userDocRef, data);
   }
 
+  // Fetch User Profile Info
   async function getProfile() {
     if (!currentUser) return;
     const userDocRef = doc(db, 'users', currentUser.uid);
@@ -52,37 +56,44 @@ export function AuthProvider({ children }) {
     return userDoc.exists() ? userDoc.data() : null;
   }
 
+  // Fetch Billing and Shipping Info
   async function fetchBillingAndShippingInfo() {
     if (!currentUser) {
       console.warn("No current user logged in.");
       return null;
     }
-
     try {
       const userDocRef = doc(db, 'users', currentUser.uid);
       const userDoc = await getDoc(userDocRef);
-      
-      if (userDoc.exists()) {
-        const data = userDoc.data();
-        // console.log("Billing and Shipping Info Retrieved:", data); // Debugging log
-        return data;
-      } else {
-        console.warn("User document does not exist.");
-        return null;
-      }
+      return userDoc.exists() ? userDoc.data() : null;
     } catch (error) {
-      // console.error("Error fetching billing and shipping info:", error);
+      console.error("Error fetching billing and shipping info:", error);
       return null;
     }
   }
 
-  // Save order information in Firestore under a separate collection
+  // Place an Order
   async function placeOrder(orderData) {
     if (!currentUser) return;
     const orderCollectionRef = collection(db, 'users', currentUser.uid, 'orders');
     await addDoc(orderCollectionRef, orderData);
   }
 
+  // Send Contact Message
+  async function sendContactMessage(contactData) {
+    try {
+      const contactCollectionRef = collection(db, 'contactMessages', currentUser.uid, 'messages');
+      await addDoc(contactCollectionRef, {
+        ...contactData,
+      createdAt: Timestamp.now()
+    });
+    } catch (error) {
+      console.error('Error sending contact message:', error);
+      throw error;
+    }
+  }
+
+  // Handle Authentication State Change
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async user => {
       setCurrentUser(user);
@@ -95,7 +106,6 @@ export function AuthProvider({ children }) {
         setRole('');
       }
     });
-
     return unsubscribe;
   }, []);
 
@@ -110,6 +120,7 @@ export function AuthProvider({ children }) {
     getProfile,
     fetchBillingAndShippingInfo,  // Direct billing info fetch function
     placeOrder,        // Direct order placement function
+    sendContactMessage,   // <-- New Function Exposed Here!
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
