@@ -40,20 +40,29 @@ function Navbar() {
 
   return (
     <nav className="bg-gray-800 p-4">
-      <div className="container mx-auto flex justify-between items-center">
-        <div className="text-white text-2xl font-bold">E-commerce Store</div>
-        <div>
+      <div className="w-full flex justify-between items-center px-4">
+        {/* Left Side: Logo */}
+        <div className="text-white text-2xl font-bold">
+          E-commerce Store
+        </div>
+  
+        {/* Right Side: Navigation Links + User Menu */}
+        <div className="flex items-center ml-auto space-x-4">
           <Link to="/server-status" className="text-gray-300 hover:text-white px-3 py-2">Server Status</Link>
           <Link to="/" className="text-gray-300 hover:text-white px-3 py-2">Home</Link>
           <Link to="/search" className="text-gray-300 hover:text-white px-3 py-2">Search</Link>
           {currentUser && (
             <Link to="/checkout" className="text-gray-300 hover:text-white px-3 py-2">Checkout</Link>
           )}
-          
+  
           <div className="relative inline-block">
-            <button onClick={toggleDropdown} className="bg-gray-700 text-white text-xl font-bold py-2 px-4 rounded-full">
+            <button 
+              onClick={toggleDropdown} 
+              className="bg-gray-700 text-white text-xl font-bold py-2 px-4 rounded-full"
+            >
               {getUserInitial()}
             </button>
+  
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20">
                 <Link to="/profile" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Profile</Link>
@@ -70,15 +79,18 @@ function Navbar() {
               </div>
             )}
           </div>
-          {currentUser && (
-            <div className="text-white ml-4">
-              Hello, {currentUser.email.split('@')[0] || 'User'} - {role} view!
-            </div>
-          )}
         </div>
       </div>
     </nav>
   );
-}
+  
+}  
 
 export default Navbar;
+/*
+{currentUser && (
+            <div className="text-white ml-4">
+              Hello, {currentUser.email.split('@')[0] || 'User'} - {role} view!
+            </div>
+          )}
+*/

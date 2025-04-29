@@ -3,8 +3,10 @@ import { addProduct } from '../services/productService';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import AlertModal from '../components/AlertModal';
 
 const AddProduct = () => {
+  const [alertMessage, setAlertMessage] = useState('');
   const [newProduct, setNewProduct] = useState({
     title: '',
     description: '',
@@ -29,6 +31,13 @@ const AddProduct = () => {
       depth: ''
     }
   });
+
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setTimeout(() => {
+      setAlertMessage('');
+    }, 3000);
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -90,7 +99,7 @@ const AddProduct = () => {
           depth: ''
         }
       });
-      alert('Product added successfully');
+      showAlert('Product added successfully');
     } catch (error) {
       console.error('Error adding product:', error);
     }
@@ -99,6 +108,14 @@ const AddProduct = () => {
   return (
     <>
       <Navbar />
+      {alertMessage && (
+        <AlertModal 
+          message={alertMessage} 
+          onClose={() => {
+            setAlertMessage('');
+          }} 
+        />
+      )}
       <div className="p-6 bg-gray-900 text-white min-h-screen flex justify-center items-center">
         <div className="container max-w-lg mx-auto bg-gray-800 p-6 rounded shadow-lg">
           <Link to="/product-crud" className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 text-center mb-6 block">

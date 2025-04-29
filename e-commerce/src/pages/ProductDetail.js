@@ -37,6 +37,9 @@ function ProductDetail() {
 
   const showAlert = (message) => {
     setAlertMessage(message);
+    setTimeout(() => {
+      setAlertMessage('');
+    }, 3000); // alert disappears automatically after 3 seconds
   };
 
   const addToCheckout = async () => {
@@ -113,9 +116,14 @@ function ProductDetail() {
     <>
       <Navbar />
       <div className="container mx-auto px-4 py-8">
-        {alertMessage && (
-          <AlertModal message={alertMessage} onClose={() => setAlertMessage('')} />
-        )}
+      {alertMessage && (
+          <AlertModal 
+            message={alertMessage} 
+            onClose={() => {
+              setAlertMessage('');
+            }} 
+          />
+        )} 
         <div className="py-8">
           <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
           {renderImage()}

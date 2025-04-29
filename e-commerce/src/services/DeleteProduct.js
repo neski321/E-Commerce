@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import AlertModal from '../components/AlertModal';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -13,6 +14,14 @@ const DeleteProduct = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [productNotFound, setProductNotFound] = useState(false);
   const [productId, setProductId] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
+  
+    const showAlert = (message) => {
+      setAlertMessage(message);
+      setTimeout(() => {
+        setAlertMessage('');
+      }, 3000);
+    };
 
   const handleDeleteProduct = async (e) => {
     e.preventDefault();
@@ -23,7 +32,7 @@ const DeleteProduct = () => {
     try {
       await axios.delete(`${API_URL}/products/${productId}`);
       setProductId('');
-      alert('Product deleted successfully');
+      showAlert('Product deleted successfully');
       setEditingProduct(null); // Clear product info after deletion
     } catch (error) {
       console.error('Error deleting product:', error);
@@ -65,6 +74,14 @@ const DeleteProduct = () => {
   return (
     <>
       <Navbar />
+      {alertMessage && (
+        <AlertModal 
+          message={alertMessage} 
+          onClose={() => {
+            setAlertMessage('');
+          }} 
+        />
+      )}
       <div className="bg-gray-900 text-white min-h-screen flex flex-col items-center py-12">
         <div className="w-full max-w-lg bg-gray-800 p-6 rounded-lg shadow-lg">
           <Link

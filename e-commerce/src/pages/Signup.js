@@ -79,13 +79,7 @@ function Signup() {
             <label htmlFor="password-confirm" className="block text-gray-700">Confirm Password</label>
             <input type="password" id="password-confirm" ref={passwordConfirmRef} required className="w-full px-3 py-2 border rounded" />
             </div>
-            <div className="mb-4">
-            <label htmlFor="role" className="block text-gray-700">Role</label>
-            <select id="role" ref={roleRef} className="w-full px-3 py-2 border rounded">
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
-            </select>
-            </div>
+            
             <button type="submit" disabled={loading} className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
             Sign Up
             </button>
@@ -110,3 +104,12 @@ function Signup() {
 }
 
 export default Signup;
+/*
+<div className="mb-4">
+            <label htmlFor="role" className="block text-gray-700">Role</label>
+            <select id="role" ref={roleRef} className="w-full px-3 py-2 border rounded">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+            </select>
+            </div>
+*/

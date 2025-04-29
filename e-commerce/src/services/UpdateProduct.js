@@ -4,6 +4,7 @@ import { updateProduct, removeReview } from '../services/productService';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import AlertModal from '../components/AlertModal';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -14,6 +15,14 @@ const UpdateProduct = () => {
   const [searchType, setSearchType] = useState('id');
   const [productNotFound, setProductNotFound] = useState(false);
   const [changedFields, setChangedFields] = useState({});
+  const [alertMessage, setAlertMessage] = useState('');
+
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setTimeout(() => {
+      setAlertMessage('');
+    }, 3000);
+  };
 
   const handleEditInputChange = (e) => {
     const { name, value } = e.target;
@@ -52,9 +61,10 @@ const UpdateProduct = () => {
       await updateProduct(editingProduct.id, updatedProduct);
       setEditingProduct(null);
       setChangedFields({});
-      alert('Product updated successfully');
+      showAlert('Product updated successfully');
     } catch (error) {
       console.error('Error updating product with PATCH:', error);
+      showAlert('Product update failed !!');
     }
   };
 
@@ -89,7 +99,7 @@ const UpdateProduct = () => {
         updatedReviews.splice(index, 1);
         return { ...prevState, reviews: updatedReviews };
       });
-      alert('Review removed successfully');
+      showAlert('Review removed successfully');
     } catch (error) {
       console.error('Error removing review:', error);
     }
@@ -105,6 +115,14 @@ const UpdateProduct = () => {
   return (
     <>
       <Navbar />
+      {alertMessage && (
+          <AlertModal 
+            message={alertMessage} 
+            onClose={() => {
+              setAlertMessage('');
+            }} 
+          />
+        )}
       <div className="bg-gray-900 text-white min-h-screen py-12">
         <div className="container mx-auto px-6">
           <Link to="/product-crud" className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded mb-6 inline-block">

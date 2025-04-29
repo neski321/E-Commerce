@@ -63,7 +63,9 @@ MIDDLEWARE = [
 FIREBASE_PROJECT_ID = os.getenv('FIREBASE_PROJECT_ID')
 
 # CORS settings
-CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS').split(',')
+# CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS').split(',')
+
+CORS_ALLOW_ALL_ORIGINS = True 
 
 ROOT_URLCONF = "backend.urls"
 
