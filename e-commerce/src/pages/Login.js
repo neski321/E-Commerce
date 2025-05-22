@@ -24,14 +24,12 @@ function Login() {
       await login(emailRef.current.value, passwordRef.current.value);
       navigate('/');
     } catch (error) {
-      console.log(error.code);
-      // Handle errors
       switch (error.code) {
         case AuthErrorCodes.INVALID_LOGIN_CREDENTIALS:
-          setError('The password and email address do not match please try again or Create an account.');
+          setError('The password and email address do not match. Please try again or create an account.');
           break;
         default:
-          setError('Failed to Log in');
+          setError('Failed to log in');
           break;
       }
     }
@@ -53,33 +51,48 @@ function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8">
-            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Log In</h2>
-            {error && <p className="mt-2 text-center text-sm text-red-600">{error}</p>}
-            <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                    <label htmlFor="email" className="block text-gray-700">Email</label>
-                    <input type="email" id="email" ref={emailRef} required className="w-full px-3 py-2 border rounded" />
-                    </div>
-                    <div className="mb-4">
-                    <label htmlFor="password" className="block text-gray-700">Password</label>
-                    <input type="password" id="password" ref={passwordRef} required className="w-full px-3 py-2 border rounded" />
-                    </div>
-                <button type="submit" disabled={loading} className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                Log In
-                </button>
-            </form>
-            <div className="text-center">
-                Need an account? <Link to="/signup" className="text-blue-500 hover:underline">Sign Up</Link>
-                <p>OR</p>
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-gray-100">
+      {/* Branding section */}
+      <div className="flex flex-col items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-700 text-white p-10">
+        <h1 className="text-5xl font-extrabold tracking-tight mb-4 drop-shadow-lg">
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-200">E-commerce Store</span>
+        </h1>
+        <p className="text-lg text-gray-100 mt-2 font-medium text-center max-w-sm">
+          Welcome back to your favorite online store — fast, stylish, and made for you.
+        </p>
+      </div>
+
+      {/* Login form section */}
+      <div className="flex items-center justify-center p-10">
+        <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-xl">
+          <h2 className="text-center text-3xl font-extrabold text-gray-900">Log In to Your Account</h2>
+          {error && <p className="mt-2 text-center text-sm text-red-600">{error}</p>}
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+              <input type="email" id="email" ref={emailRef} required className="w-full px-3 py-2 border rounded" />
             </div>
             <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+              <input type="password" id="password" ref={passwordRef} required className="w-full px-3 py-2 border rounded" />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition"
+            >
+              Log In
+            </button>
+          </form>
+          <div className="text-center mt-4">
+            <p>Need an account? <Link to="/signup" className="text-blue-500 hover:underline">Sign Up</Link></p>
+            <p className="mt-2 text-sm text-gray-500">OR</p>
+          </div>
           <button
             type="button"
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            className="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition mt-2"
           >
             Log in with Google
           </button>
